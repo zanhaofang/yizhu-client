@@ -31,7 +31,7 @@ public class AppManager {
     }
 
     /**
-     * 添加Activity到堆栈
+     * 添加Activity到堆栈，在每个Activity的onCreate里添加
      */
     public void addActivity(Activity activity) {
         if (activityStack == null) {
