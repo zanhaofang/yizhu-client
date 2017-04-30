@@ -1,6 +1,7 @@
 package com.sysu.yizhu;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,9 +20,12 @@ import java.net.URLEncoder;
 
 /**
  * Created by QianZixuan on 2017/4/19.
+ * Description: 注册界面Activity
  */
 public class SignUpActivity extends AppCompatActivity {
     private static final String url = "http://172.18.68.242:8080/user/register";
+
+    //定义message.what的参数
     private static final int ERROR = 0;
     private static final int OK = 1;
     private static final int FORBIDDEN = 2;
@@ -31,12 +35,19 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText retype_sign_up_password = null;
     private Button sign_up_submit = null;
 
+    //sharedpreference用以存储
+    private SharedPreferences preference;
+    private  SharedPreferences.Editor editor;
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) { //对UI操作
+            switch (msg.what) { //保存登录成功的用户名密码，并对UI操作
                 case OK:
                     Toast.makeText(SignUpActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    editor.putString("username", sign_up_username.getText().toString());
+                    editor.putString("password", sign_up_password.getText().toString());
+                    editor.commit();
                     Intent intent = new Intent();
                     intent.setClass(SignUpActivity.this, MainActivity.class);
                     SignUpActivity.this.startActivity(intent);
@@ -63,6 +74,12 @@ public class SignUpActivity extends AppCompatActivity {
                     connection.setRequestMethod("POST");
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
+
+                    final String cookieval = connection.getHeaderField("Set-Cookie");
+                    if (cookieval != null) {
+                        editor.putString("jsessionid", cookieval);
+                        editor.commit();
+                    }
 
                     DataOutputStream out = new DataOutputStream(connection.getOutputStream());
                     String request_username = sign_up_username.getText().toString();
@@ -106,10 +123,15 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(com.sysu.yizhu.R.layout.sign_up_layout);
 
+        AppManager.getAppManager().addActivity(SignUpActivity.this);
+
         sign_up_username = (EditText) findViewById(R.id.sign_up_username);
         sign_up_password = (EditText) findViewById(R.id.sign_up_password);
         retype_sign_up_password = (EditText) findViewById(R.id.retype_sign_up_password);
         sign_up_submit = (Button) findViewById(R.id.sign_up_submit);
+
+        preference = getSharedPreferences("info", MODE_PRIVATE);
+        editor = preference.edit();
 
         sign_up_submit.setOnClickListener(new View.OnClickListener() {
             @Override

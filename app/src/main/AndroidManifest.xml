@@ -11,15 +11,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         
-        <activity android:name=".SignInActivity"
-            android:launchMode="singleInstance">
+        <activity android:name=".LaunchActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppStartLoadTranslucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".SignInActivity"
+            android:launchMode="singleInstance">
+        </activity>
+
+        <activity android:name=".SignUpActivity"
             android:launchMode="singleInstance">
         </activity>
 
@@ -27,9 +32,10 @@
             android:launchMode="singleInstance">
         </activity>
 
-        <activity android:name=".SignUpActivity"
+        <activity android:name=".MainActivity"
             android:launchMode="singleInstance">
         </activity>
+
 
     </application>
 

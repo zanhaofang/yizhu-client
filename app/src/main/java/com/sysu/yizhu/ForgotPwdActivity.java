@@ -6,11 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by QianZixuan on 2017/4/19.
+ * Description: 忘记密码Activity
  */
 public class ForgotPwdActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_pwd_layout);
+
+        AppManager.getAppManager().addActivity(ForgotPwdActivity.this);
     }
 }

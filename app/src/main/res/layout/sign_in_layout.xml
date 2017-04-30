@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center">
 
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,7 +20,7 @@
         android:id="@+id/sign_in_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="1" />
+        android:singleLine="true" />
 
     <EditText
         android:hint="@string/password"
@@ -27,7 +28,7 @@
         android:inputType="textPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="1" />
+        android:singleLine="true" />
 
     <Button
         android:text="@string/sign_in"
