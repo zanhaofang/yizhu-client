@@ -137,9 +137,9 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(sign_up_username.getText())) {
-                    Toast.makeText(SignUpActivity.this, "请填写用户名", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "请输入手机号", Toast.LENGTH_SHORT).show();
                 } else if (TextUtils.isEmpty(sign_up_password.getText())) {
-                    Toast.makeText(SignUpActivity.this, "请填写密码", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                 } else if (TextUtils.isEmpty(retype_sign_up_password.getText())) {
                     Toast.makeText(SignUpActivity.this, "请确认密码", Toast.LENGTH_SHORT).show();
                 } else if (!sign_up_password.getText().toString().equals(retype_sign_up_password.getText().toString())) {

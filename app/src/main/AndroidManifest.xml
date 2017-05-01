@@ -12,30 +12,24 @@
         android:theme="@style/AppTheme">
         
         <activity android:name=".LaunchActivity"
-            android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppStartLoadTranslucent">
+            android:theme="@style/AppStartLoadTranslucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".SignInActivity"
-            android:launchMode="singleInstance">
+        <activity android:name=".SignInActivity">
         </activity>
 
-        <activity android:name=".SignUpActivity"
-            android:launchMode="singleInstance">
+        <activity android:name=".SignUpActivity">
         </activity>
 
-        <activity android:name=".ForgotPwdActivity"
-            android:launchMode="singleInstance">
+        <activity android:name=".ForgotPwdActivity">
         </activity>
 
-        <activity android:name=".MainActivity"
-            android:launchMode="singleInstance">
+        <activity android:name=".MainActivity">
         </activity>
-
 
     </application>
 

@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">YiZhu</string>
-    <string name="username">用户名</string>
-    <string name="password">密码</string>
+    <string name="username">请输入手机号</string>
+    <string name="password">请输入密码</string>
     <string name="sign_in">登录</string>
     <string name="forgot_pwd">忘记密码？</string>
     <string name="sign_up">注册</string>
-    <string name="sign_up_username">用户名</string>
-    <string name="sign_up_password">密码</string>
-    <string name="retype_sign_up_password">确认密码</string>
+    <string name="sign_up_username">请输入手机号</string>
+    <string name="sign_up_password">请输入密码</string>
+    <string name="retype_sign_up_password">请确认密码</string>
     <string name="sign_up_submit">注册</string>
 </resources>

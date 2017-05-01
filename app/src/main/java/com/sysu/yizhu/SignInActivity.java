@@ -141,9 +141,9 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(sign_in_username.getText())) {
-                    Toast.makeText(SignInActivity.this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignInActivity.this, "请输入手机号", Toast.LENGTH_SHORT).show();
                 } else if (TextUtils.isEmpty(sign_in_password.getText())) {
-                    Toast.makeText(SignInActivity.this, "密码不能为空", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignInActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                 } else {
                     sendRequesttoserver();
                 }
