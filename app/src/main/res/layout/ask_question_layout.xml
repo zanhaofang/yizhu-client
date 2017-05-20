@@ -7,6 +7,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="个人信息    待开发..." />
+        android:text="提问    待开发..." />
 
 </LinearLayout>

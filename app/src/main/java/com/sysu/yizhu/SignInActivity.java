@@ -29,7 +29,8 @@ public class SignInActivity extends AppCompatActivity {
     //定义message.what的参数
     private static final int ERROR = 0;
     private static final int OK = 1;
-    private static final int NOT_FOUND = 2;
+    private static final int FORBIDDEN = 2;
+    private static final int NOT_FOUND = 3;
 
     private EditText sign_in_username = null;
     private EditText sign_in_password = null;
@@ -40,86 +41,6 @@ public class SignInActivity extends AppCompatActivity {
     //存储用户名密码
     private SharedPreferences preference;
     private  SharedPreferences.Editor editor;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) { // 保存登录成功的用户名密码，并对UI操作
-                case OK:
-                    Toast.makeText(SignInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                    editor.putString("username", sign_in_username.getText().toString());
-                    editor.putString("password", sign_in_password.getText().toString());
-                    editor.commit();
-                    Intent intent = new Intent();
-                    intent.setClass(SignInActivity.this, MainActivity.class);
-                    SignInActivity.this.startActivity(intent);
-                    break;
-                case NOT_FOUND:
-                    Toast.makeText(SignInActivity.this, "登录失败，用户名或密码错误", Toast.LENGTH_SHORT).show();
-                    break;
-                case ERROR:
-                    Toast.makeText(SignInActivity.this, "发生错误，请检查网络连接", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
-    //
-    private void sendRequesttoserver() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection = null;
-                try {
-                    connection = (HttpURLConnection) (new URL(url.toString()).openConnection()); // 建立连接
-                    connection.setRequestMethod("POST");
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
-
-                    final String cookieval = connection.getHeaderField("Set-Cookie");
-                    if (cookieval != null) {
-                        editor.putString("jsessionid", cookieval);
-                        editor.commit();
-                    }
-
-                    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-                    String request_username = sign_in_username.getText().toString();
-                    String request_password = sign_in_password.getText().toString();
-                    request_username = URLEncoder.encode(request_username, "utf-8"); // 设置编码
-                    request_password = URLEncoder.encode(request_password, "utf-8");
-                    out.writeBytes("userId=" + request_username + "&password=" + request_password); // 请求格式
-
-                    int code = connection.getResponseCode();
-                    Message msg = Message.obtain();
-                    switch (code) {
-                        case 200:
-                            msg.what = OK;
-                            handler.sendMessage(msg);
-                            break;
-                        case 404:
-                            msg.what = NOT_FOUND;
-                            handler.sendMessage(msg);
-                            break;
-                        default:
-                            msg.what = ERROR;
-                            handler.sendMessage(msg);
-                            break;
-                    }
-                } catch (Exception e) {
-                    Message msg = Message.obtain();
-                    msg.what = ERROR;
-                    handler.sendMessage(msg);
-                    e.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect(); // 断开连接
-                    }
-                }
-            }
-        }).start();
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -167,5 +88,103 @@ public class SignInActivity extends AppCompatActivity {
                 SignInActivity.this.startActivity(intent);
             }
         });
+    }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) { // 保存登录成功的用户名密码，并对UI操作
+                case OK:
+                    Toast.makeText(SignInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    editor.putString("username", sign_in_username.getText().toString());
+                    editor.putString("password", sign_in_password.getText().toString());
+                    editor.commit();
+                    Intent intent = new Intent();
+                    intent.setClass(SignInActivity.this, MainActivity.class);
+                    SignInActivity.this.startActivity(intent);
+                    break;
+                case FORBIDDEN:
+                    Toast.makeText(SignInActivity.this, "用户名不是手机号", Toast.LENGTH_SHORT).show();
+                    break;
+                case NOT_FOUND:
+                    Toast.makeText(SignInActivity.this, "登录失败，用户名或密码错误", Toast.LENGTH_SHORT).show();
+                    break;
+                case ERROR:
+                    Toast.makeText(SignInActivity.this, "发生错误，请检查网络连接", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    //
+    private void sendRequesttoserver() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    String request_username = sign_in_username.getText().toString();
+                    String request_password = sign_in_password.getText().toString();
+                    request_username = URLEncoder.encode(request_username, "utf-8"); // 设置编码
+                    request_password = URLEncoder.encode(request_password, "utf-8");
+                    String data = "userId=" + request_username + "&password=" + request_password; // 请求数据格式
+
+                    connection = (HttpURLConnection) (new URL(url).openConnection()); // 建立连接
+                    connection.setRequestMethod("POST");
+                    connection.setReadTimeout(5000);
+                    connection.setConnectTimeout(5000);
+
+                    // 设置请求的头
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setRequestProperty("Content-Length", String.valueOf(data.getBytes().length));
+
+                    connection.setDoOutput(true);
+                    connection.setDoInput(true);
+
+                    /*final String cookieval = connection.getHeaderField("Set-Cookie");
+                    if (cookieval != null) {
+                        editor.putString("jsessionid", cookieval);
+                        editor.commit();
+                    }*/
+
+                    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+                    out.write(data.getBytes());
+                    out.flush();
+                    out.close();
+
+                    int code = connection.getResponseCode(); // 获取服务器响应
+                    Message msg = Message.obtain();
+                    switch (code) {
+                        case 200:
+                            msg.what = OK;
+                            handler.sendMessage(msg);
+                            break;
+                        case 403:
+                            msg.what = FORBIDDEN;
+                            handler.sendMessage(msg);
+                            break;
+                        case 404:
+                            msg.what = NOT_FOUND;
+                            handler.sendMessage(msg);
+                            break;
+                        default:
+                            msg.what = ERROR;
+                            handler.sendMessage(msg);
+                            break;
+                    }
+                } catch (Exception e) {
+                    Message msg = Message.obtain();
+                    msg.what = ERROR;
+                    handler.sendMessage(msg);
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect(); // 断开连接
+                    }
+                }
+            }
+        }).start();
     }
 }

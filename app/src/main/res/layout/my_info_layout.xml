@@ -17,12 +17,12 @@
                 android:text="姓名"/>
 
             <EditText
-                android:id="@+id/sign_up_name"
+                android:id="@+id/my_info_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:singleLine="true"
                 android:background="@drawable/bg_edittext"
-                android:layout_span="2"/>
+                android:layout_span="1"/>
         </TableRow>
 
         <TableRow>
@@ -33,11 +33,11 @@
                 android:text="性别"/>
 
             <Spinner
-                android:id="@+id/sign_up_gender"
+                android:id="@+id/my_info_gender"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:entries="@array/spinner_gender"
-                android:layout_span="2"/>
+                android:layout_span="1"/>
         </TableRow>
 
         <TableRow>
@@ -48,10 +48,10 @@
                 android:text="出生年月"/>
 
             <TextView
-                android:id="@+id/sign_up_birthDateText"
+                android:id="@+id/my_info_birthDateText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_span="2"
+                android:layout_span="1"
                 android:gravity="center_vertical"/>
         </TableRow>
 
@@ -63,12 +63,12 @@
                 android:text="常居地"/>
 
             <EditText
-                android:id="@+id/sign_up_location"
+                android:id="@+id/my_info_location"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:singleLine="true"
                 android:background="@drawable/bg_edittext"
-                android:layout_span="2"/>
+                android:layout_span="1"/>
         </TableRow>
 
         <TableRow>
@@ -79,36 +79,12 @@
                 android:text="手机"/>
 
             <EditText
-                android:id="@+id/sign_up_phoneNum"
+                android:id="@+id/my_info_phoneNum"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:singleLine="true"
+                android:layout_span="1"
                 android:background="@drawable/bg_edittext"/>
-
-            <Button
-                android:id="@+id/sign_up_getCode"
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:textSize="13sp"
-                android:background="#808080"
-                android:gravity="center"
-                android:text="获取验证码" />
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="输入验证码"/>
-
-            <EditText
-                android:id="@+id/sign_up_code"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:background="@drawable/bg_edittext"
-                android:layout_span="2"/>
         </TableRow>
 
         <TableRow>
@@ -119,13 +95,13 @@
                 android:text="请输入密码"/>
 
             <EditText
-                android:id="@+id/sign_up_password"
+                android:id="@+id/my_info_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:singleLine="true"
                 android:inputType="textPassword"
                 android:background="@drawable/bg_edittext"
-                android:layout_span="2"/>
+                android:layout_span="1"/>
         </TableRow>
 
         <TableRow>
@@ -136,20 +112,20 @@
                 android:text="确认密码"/>
 
             <EditText
-                android:id="@+id/sign_up_retypePassword"
+                android:id="@+id/my_info_retypePassword"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:singleLine="true"
                 android:inputType="textPassword"
                 android:background="@drawable/bg_edittext"
-                android:layout_span="2"/>
+                android:layout_span="1"/>
         </TableRow>
 
         <TableRow
             android:gravity="center">
             <Button
-                android:text="注册"
-                android:id="@+id/sign_up_button"
+                android:text="编辑"
+                android:id="@+id/my_info_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#808080"/>

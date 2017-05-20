@@ -19,10 +19,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SignInActivity">
+        <activity android:name=".SignInActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
-        <activity android:name=".SignUpActivity">
+        <activity android:name=".SignUpActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity android:name=".ForgotPwdActivity">

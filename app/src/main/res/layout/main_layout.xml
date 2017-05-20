@@ -16,18 +16,21 @@
         android:background="@color/colorPrimary">
 
         <Button
+            android:id="@+id/hotkey_help"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="求救" />
 
         <Button
+            android:id="@+id/ask_help"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="求助" />
 
         <Button
+            android:id="@+id/ask_question"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
