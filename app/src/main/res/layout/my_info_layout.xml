@@ -87,40 +87,6 @@
                 android:background="@drawable/bg_edittext"/>
         </TableRow>
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="请输入密码"/>
-
-            <EditText
-                android:id="@+id/my_info_password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:inputType="textPassword"
-                android:background="@drawable/bg_edittext"
-                android:layout_span="1"/>
-        </TableRow>
-
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="确认密码"/>
-
-            <EditText
-                android:id="@+id/my_info_retypePassword"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:inputType="textPassword"
-                android:background="@drawable/bg_edittext"
-                android:layout_span="1"/>
-        </TableRow>
-
         <TableRow
             android:gravity="center">
             <Button
@@ -128,7 +94,7 @@
                 android:id="@+id/my_info_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#808080"/>
+                android:layout_span="2"/>
         </TableRow>
 
     </TableLayout>

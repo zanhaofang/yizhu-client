@@ -1,13 +1,21 @@
-package com.sysu.yizhu;
+package com.sysu.yizhu.Activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+
+import com.sysu.yizhu.R;
+import com.sysu.yizhu.Util.AppManager;
 
 /**
  * Created by QianZixuan on 2017/4/19.
@@ -26,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     private AskQuestionFragment ask_question_fragment;
     private MyInfoFragment my_info_fragment;
 
+    private SharedPreferences preference;
+    private  SharedPreferences.Editor editor;
+
     //为main_content设置默认fragment
     private void setDefaultFragment() {
         FragmentManager fm = getFragmentManager();
@@ -33,6 +44,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         hotkey_help_fragment = new HotkeyHelpFragment();
         transaction.replace(R.id.main_content, hotkey_help_fragment);
         transaction.commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
     }
 
     @Override
@@ -54,7 +72,28 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         ask_question_button.setOnClickListener(this);
         my_info_button.setOnClickListener(this);
 
+        //sharedpreference初始化
+        preference = getSharedPreferences("info", MODE_PRIVATE);
+        editor = preference.edit();
+
         setDefaultFragment();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                editor.putString("state", "logout");
+                editor.commit();
+                Intent intent = new Intent();
+                intent.setClass( MainActivity.this, SignInActivity.class);
+                MainActivity.this.startActivity(intent);
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override

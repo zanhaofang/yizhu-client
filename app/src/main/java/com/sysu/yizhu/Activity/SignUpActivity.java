@@ -1,4 +1,4 @@
-package com.sysu.yizhu;
+package com.sysu.yizhu.Activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -20,10 +20,12 @@ import android.widget.Toast;
 import android.os.CountDownTimer;
 import android.graphics.Color;
 
+import com.sysu.yizhu.R;
+import com.sysu.yizhu.Util.AppManager;
+
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Calendar;
 
 /**
@@ -31,8 +33,8 @@ import java.util.Calendar;
  * Description: 注册界面Activity
  */
 public class SignUpActivity extends AppCompatActivity {
-    private static final String getCodeUrl = "http://172.18.68.242:8080/user/sendSms/:";
-    private static final String signUpUrl = "http://172.18.68.242:8080/user/register";
+    private static final String getCodeUrl = "http://112.74.165.37:8080/user/sendSms/";
+    private static final String signUpUrl = "http://112.74.165.37:8080/user/register";
 
     //定义message.what的参数
     private static final int ERROR = 0;
@@ -211,9 +213,6 @@ public class SignUpActivity extends AppCompatActivity {
                     break;
                 case SIGN_UP_OK:
                     Toast.makeText(SignUpActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                    editor.putString("username", phoneNumText.getText().toString());
-                    //editor.putString("password", sign_in_password.getText().toString());
-                    editor.commit();
                     Intent intent = new Intent();
                     intent.setClass(SignUpActivity.this, MainActivity.class);
                     SignUpActivity.this.startActivity(intent);
@@ -243,6 +242,7 @@ public class SignUpActivity extends AppCompatActivity {
                     connection.setRequestMethod("GET");
                     connection.setReadTimeout(5000);
                     connection.setConnectTimeout(5000);
+                    connection.connect();
 
                     int code = connection.getResponseCode(); // 获取服务器响应
                     Message msg = Message.obtain();
@@ -285,13 +285,13 @@ public class SignUpActivity extends AppCompatActivity {
                 HttpURLConnection connection = null;
                 try {
                     // 请求数据格式
-                    String data = "userId=" + URLEncoder.encode(phoneNumText.getText().toString(), "utf-8")
-                            + "&password=" + URLEncoder.encode(passwordText.getText().toString(), "utf-8")
-                            + "&code=" + URLEncoder.encode(codeText.getText().toString(), "utf-8")
-                            + "&name=" + URLEncoder.encode(nameText.getText().toString(), "utf-8")
-                            + "&gender=" + URLEncoder.encode(gender, "utf-8")
-                            + "&birthDate=" + URLEncoder.encode(birthDateText.getText().toString(), "utf-8")
-                            + "&location=" + URLEncoder.encode(locationText.getText().toString(), "utf-8");
+                    String data = "userId=" + phoneNumText.getText().toString()
+                            + "&password=" + passwordText.getText().toString()
+                            + "&code=" + codeText.getText().toString()
+                            + "&name=" + nameText.getText().toString()
+                            + "&gender=" + gender
+                            + "&birthDate=" + birthDateText.getText().toString()
+                            + "&location=" + locationText.getText().toString();
 
                     connection = (HttpURLConnection) (new URL(signUpUrl).openConnection()); // 建立连接
                     connection.setRequestMethod("POST");
@@ -299,17 +299,13 @@ public class SignUpActivity extends AppCompatActivity {
                     connection.setConnectTimeout(5000);
 
                     // 设置请求的头
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
                     connection.setRequestProperty("Content-Length", String.valueOf(data.getBytes().length));
 
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
 
-                    /*final String cookieval = connection.getHeaderField("Set-Cookie");
-                    if (cookieval != null) {
-                        editor.putString("jsessionid", cookieval);
-                        editor.commit();
-                    }*/
+                    connection.connect();
 
                     DataOutputStream out = new DataOutputStream(connection.getOutputStream());
                     out.write(data.getBytes());
@@ -320,6 +316,15 @@ public class SignUpActivity extends AppCompatActivity {
                     Message msg = Message.obtain();
                     switch (code) {
                         case 200:
+                            editor.putString("username", phoneNumText.getText().toString());
+                            editor.putString("password", passwordText.getText().toString());
+                            editor.putString("state", "login");
+                            editor.commit();
+                            final String cookieval = connection.getHeaderField("Set-Cookie");
+                            if (cookieval != null) {
+                                editor.putString("jsessionid", cookieval);
+                                editor.commit();
+                            }
                             msg.what = SIGN_UP_OK;
                             handler.sendMessage(msg);
                             break;

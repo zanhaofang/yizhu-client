@@ -1,8 +1,11 @@
-package com.sysu.yizhu;
+package com.sysu.yizhu.Activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.sysu.yizhu.R;
+import com.sysu.yizhu.Util.AppManager;
 
 /**
  * Created by QianZixuan on 2017/4/19.

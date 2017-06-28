@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:hint="添加回答"
+        android:gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/add_answer_content"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="提交"
+        android:id="@+id/add_answer_submit"/>
+
+</LinearLayout>

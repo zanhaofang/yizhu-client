@@ -1,10 +1,12 @@
-package com.sysu.yizhu;
+package com.sysu.yizhu.Activity;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.sysu.yizhu.R;
 
 /**
  * Created by QianZixuan on 2017/4/30.
