@@ -22,7 +22,19 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".MyApplication">
+
+        <!-- 实时通信模块、推送 START -->
+        <service android:name="com.avos.avoscloud.PushService"/>
+        <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+        <!-- 实时通信模块、推送 END -->
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
