@@ -1,5 +1,6 @@
 package com.sysu.yizhu.Activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.AppManager;
 import com.sysu.yizhu.Util.HttpUtil;
+import com.sysu.yizhu.Util.PermissionsChecker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +24,16 @@ import java.util.HashMap;
  * Description: App启动页面
  */
 public class LaunchActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE = 0; // 请求码
+
+    // 所需的全部权限
+    static final String[] PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    private PermissionsChecker mPermissionsChecker;
+
     private static final String url = "http://112.74.165.37:8080/user/login";
 
     private SharedPreferences preference;
@@ -36,23 +48,47 @@ public class LaunchActivity extends AppCompatActivity {
         preference = getSharedPreferences("info", MODE_PRIVATE);
         editor = preference.edit();
 
-        Integer time = 2000;    //设置等待时间，单位为毫秒
-        Handler handler = new Handler();
-        //当计时结束时跳转
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //已登录进入主页面，否则登录界面
-                if (preference.getString("state", "").equals("login")) {
-                    autoSignIn();
-                } else {
-                    Intent intent = new Intent();
-                    intent.setClass(LaunchActivity.this, SignInActivity.class);
-                    LaunchActivity.this.startActivity(intent);
+        mPermissionsChecker = new PermissionsChecker(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+            startPermissionsActivity();
+        } else {
+            Integer time = 2000;    //设置等待时间，单位为毫秒
+            Handler handler = new Handler();
+            //当计时结束时跳转
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //已登录进入主页面，否则登录界面
+                    if (preference.getString("state", "").equals("login")) {
+                        autoSignIn();
+                    } else {
+                        Intent intent = new Intent();
+                        intent.setClass(LaunchActivity.this, SignInActivity.class);
+                        LaunchActivity.this.startActivity(intent);
+                    }
+                    AppManager.getAppManager().finishActivity();
                 }
-                AppManager.getAppManager().finishActivity();
-            }
-        }, time);
+            }, time);
+        }
+    }
+
+    private void startPermissionsActivity() {
+        PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 拒绝时, 关闭页面, 缺少主要权限, 无法运行
+        if (requestCode == REQUEST_CODE && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+            AppManager.getAppManager().finishActivity();
+        }
     }
 
     private void autoSignIn() {
