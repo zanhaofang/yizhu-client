@@ -73,6 +73,9 @@
         <activity android:name=".Activity.AddAnswerActivity">
         </activity>
 
+        <activity android:name=".Activity.PermissionsActivity">
+        </activity>
+
     </application>
 
 </manifest>
