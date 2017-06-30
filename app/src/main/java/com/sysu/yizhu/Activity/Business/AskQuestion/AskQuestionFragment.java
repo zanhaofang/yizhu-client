@@ -1,4 +1,4 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Business.AskQuestion;
 
 import android.app.ListFragment;
 import android.content.Intent;

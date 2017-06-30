@@ -1,4 +1,4 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sysu.yizhu.Activity.Business.MainActivity;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;

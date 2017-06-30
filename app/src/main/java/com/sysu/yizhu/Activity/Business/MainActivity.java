@@ -1,4 +1,4 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Business;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -14,7 +14,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
+import com.sysu.yizhu.Activity.Business.AskHelp.AskHelpFragment;
+import com.sysu.yizhu.Activity.Business.AskQuestion.AskQuestionFragment;
+import com.sysu.yizhu.Activity.Business.HotkeyHelp.HotkeyHelpFragment;
+import com.sysu.yizhu.Activity.Business.MyInfo.MyInfoFragment;
+import com.sysu.yizhu.Activity.Login.SignInActivity;
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;
 
 /**
@@ -33,9 +39,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     private AskHelpFragment ask_help_fragment;
     private AskQuestionFragment ask_question_fragment;
     private MyInfoFragment my_info_fragment;
-
-    private SharedPreferences preference;
-    private  SharedPreferences.Editor editor;
 
     //为main_content设置默认fragment
     private void setDefaultFragment() {
@@ -72,10 +75,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         ask_question_button.setOnClickListener(this);
         my_info_button.setOnClickListener(this);
 
-        //sharedpreference初始化
-        preference = getSharedPreferences("info", MODE_PRIVATE);
-        editor = preference.edit();
-
         setDefaultFragment();
     }
 
@@ -83,8 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                editor.putString("state", "logout");
-                editor.commit();
+                UserData.getInstance().setLoginState(false);
                 Intent intent = new Intent();
                 intent.setClass( MainActivity.this, SignInActivity.class);
                 MainActivity.this.startActivity(intent);

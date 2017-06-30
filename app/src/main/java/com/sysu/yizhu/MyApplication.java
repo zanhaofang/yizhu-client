@@ -8,7 +8,7 @@ import com.avos.avoscloud.AVInstallation;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.PushService;
 import com.avos.avoscloud.SaveCallback;
-import com.sysu.yizhu.Activity.MainActivity;
+import com.sysu.yizhu.Activity.Business.MainActivity;
 
 /**
  * Created by CrazeWong on 2017/6/29.

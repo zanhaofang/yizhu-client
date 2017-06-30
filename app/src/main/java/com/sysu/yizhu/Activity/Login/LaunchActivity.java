@@ -1,4 +1,4 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Login;
 
 import android.Manifest;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.sysu.yizhu.Activity.Business.MainActivity;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;

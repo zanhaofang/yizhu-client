@@ -1,13 +1,8 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Business.MyInfo;
 
 import android.app.DatePickerDialog;
 import android.app.Fragment;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sysu.yizhu.R;
-import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.HttpUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -78,7 +68,6 @@ public class MyInfoFragment extends Fragment {
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
-        setBirthDateText();
 
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

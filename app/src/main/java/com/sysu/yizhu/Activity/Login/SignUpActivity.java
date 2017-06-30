@@ -1,11 +1,8 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Login;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -20,6 +17,7 @@ import android.widget.Toast;
 import android.os.CountDownTimer;
 import android.graphics.Color;
 
+import com.sysu.yizhu.Activity.Business.MainActivity;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;
@@ -28,9 +26,6 @@ import com.sysu.yizhu.Util.HttpUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.HashMap;
 

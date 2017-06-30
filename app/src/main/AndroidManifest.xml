@@ -36,14 +36,14 @@
         </receiver>
         <!-- 实时通信模块、推送 END -->
 
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
+        </service>
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="oIZeHReQeCAhlFOrbOvbtSmVgeU5YWK7" />
 
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
-        </service>
-
-        <activity android:name=".Activity.LaunchActivity"
+        <activity android:name=".Activity.Login.LaunchActivity"
             android:theme="@style/AppStartLoadTranslucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,29 +51,29 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Activity.SignInActivity"
+        <activity android:name=".Activity.Login.PermissionsActivity">
+        </activity>
+
+        <activity android:name=".Activity.Login.SignInActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
-        <activity android:name=".Activity.SignUpActivity">
+        <activity android:name=".Activity.Login.SignUpActivity">
         </activity>
 
-        <activity android:name=".Activity.ForgotPwdActivity">
+        <activity android:name=".Activity.Login.ForgotPwdActivity">
         </activity>
 
-        <activity android:name=".Activity.MainActivity">
+        <activity android:name=".Activity.Business.MainActivity">
         </activity>
 
-        <activity android:name=".Activity.AddQuestionActivity">
+        <activity android:name=".Activity.Business.AskQuestion.AddQuestionActivity">
         </activity>
 
-        <activity android:name=".Activity.QuestionDetailActivity">
+        <activity android:name=".Activity.Business.AskQuestion.QuestionDetailActivity">
         </activity>
 
-        <activity android:name=".Activity.AddAnswerActivity">
-        </activity>
-
-        <activity android:name=".Activity.PermissionsActivity">
+        <activity android:name=".Activity.Business.AskQuestion.AddAnswerActivity">
         </activity>
 
     </application>

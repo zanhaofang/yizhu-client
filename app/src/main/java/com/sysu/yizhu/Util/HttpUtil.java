@@ -40,15 +40,15 @@ public class HttpUtil {
 
                         final int code = conn.getResponseCode();
 
-                        BufferedReader br = new BufferedReader(
-                                new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                        if (code == 200) {//成功接受返回数据
+                            BufferedReader br = new BufferedReader(
+                                    new InputStreamReader(conn.getInputStream(), "UTF-8"));
 
-
-                        //接受返回数据
-                        sb.setLength(0);
-                        String strTemp;
-                        while ((strTemp = br.readLine()) != null) {
-                            sb.append(strTemp).append('\n');
+                            sb.setLength(0);
+                            String strTemp;
+                            while ((strTemp = br.readLine()) != null) {
+                                sb.append(strTemp).append('\n');
+                            }
                         }
 
                         conn.disconnect();

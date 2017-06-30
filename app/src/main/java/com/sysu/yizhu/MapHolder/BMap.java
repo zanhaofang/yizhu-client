@@ -3,8 +3,6 @@ package com.sysu.yizhu.MapHolder;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.icu.text.AlphabeticIndex;
-import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -12,14 +10,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.InfoWindow;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.sysu.yizhu.Activity.MainActivity;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.SerializableJson;
 

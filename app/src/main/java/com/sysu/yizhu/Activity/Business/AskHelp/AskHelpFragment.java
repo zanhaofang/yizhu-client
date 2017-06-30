@@ -1,4 +1,4 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Business.AskHelp;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -21,32 +21,38 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.sysu.yizhu.MapHolder.BMap;
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.Util.SerializableJson;
 
 /**
  * Created by QianZixuan on 2017/4/30.
- * Description: 一键求救fragment
+ * Description: 求助fragment
  */
-public class HotkeyHelpFragment extends Fragment {
+public class AskHelpFragment extends Fragment {
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private LocationClient locClient;
     private LocationClientOption locClientOpt;
-    private MyLocationListener mListener = new MyLocationListener();
+    private AskHelpFragment.MyLocationListener mListener = new AskHelpFragment.MyLocationListener();
 
     boolean isRequest; //手动请求
     boolean isFirstLoc; //初次定位
 
     private Button hotkey_help_locate;
+    private Button refreshHelpBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         SDKInitializer.initialize(getActivity().getApplicationContext());
 
-        View view = inflater.inflate(R.layout.hotkey_help_layout, container, false);
+        View view = inflater.inflate(R.layout.ask_help_layout, container, false);
         //获取地图控件引用
-        mMapView = (MapView) view.findViewById(R.id.bmapView);
-        hotkey_help_locate = (Button) view.findViewById(R.id.hotkey_help_locate);
+        mMapView = (MapView) view.findViewById(R.id.ask_help_bmapView);
+        hotkey_help_locate = (Button) view.findViewById(R.id.ask_help_locate);
+        refreshHelpBtn = (Button) view.findViewById(R.id.ask_help_refresh_btn);
+
+
 
         isRequest = false;
         isFirstLoc = true;
@@ -56,6 +62,7 @@ public class HotkeyHelpFragment extends Fragment {
         BitmapDescriptor bitmapDesc = BitmapDescriptorFactory.fromResource(R.drawable.location);
         mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, bitmapDesc));
 
+        BMap.initBMapMarkerClickListener(mBaiduMap, getActivity());
         findMyLocation();
 
         hotkey_help_locate.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +73,18 @@ public class HotkeyHelpFragment extends Fragment {
             }
         });
 
+        refreshHelpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshAskHelps();
+            }
+        });
+
         return  view;
+    }
+
+    private void refreshAskHelps() {
+        getAndShowAskHelps();
     }
 
     public void findMyLocation() {
@@ -83,7 +101,24 @@ public class HotkeyHelpFragment extends Fragment {
 //      locClientOpt.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
         locClient.setLocOption(locClientOpt);
         locClient.start();
+
     }
+
+    private void getAndShowAskHelps() {
+        SerializableJson json = new SerializableJson();
+        json.put("helpId", "1");
+        json.put("latitude", "21");
+        json.put("longitude", "120");
+        json.put("finished", "false");
+        json.put("title", "抬米");
+        json.put("detail", "帮忙抬米上五楼");
+        json.put("needs", "3");
+        json.put("responseNum", "2");
+        json.put("pushUserId", "12345678911");
+
+        BMap.showAskHelp(mBaiduMap, json);
+    }
+
 
     @Override
     public void onDestroy() {
@@ -91,12 +126,15 @@ public class HotkeyHelpFragment extends Fragment {
         //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
     }
+
     @Override
     public void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();
     }
+
+
     @Override
     public void onPause() {
         super.onPause();
@@ -104,7 +142,7 @@ public class HotkeyHelpFragment extends Fragment {
         mMapView.onPause();
     }
 
-    private class MyLocationListener implements BDLocationListener{
+    private class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
             // map view 销毁后不在处理新接收的位置

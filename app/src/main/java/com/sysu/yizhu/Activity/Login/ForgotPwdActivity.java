@@ -1,4 +1,4 @@
-package com.sysu.yizhu.Activity;
+package com.sysu.yizhu.Activity.Login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
