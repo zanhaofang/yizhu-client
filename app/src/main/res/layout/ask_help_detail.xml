@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_large"
+        android:stretchColumns="1">
+
+        <TableRow
+            android:layout_marginTop="@dimen/margin_large">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="主题"
+                android:layout_column="0"
+                android:textSize="@dimen/text_normal" />
+            <TextView
+                android:id="@+id/ask_help_title_text_view"
+                android:layout_column="1"
+                android:textSize="@dimen/text_normal"/>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="详情"
+                android:layout_column="0"
+                android:textSize="@dimen/text_normal" />
+            <EditText
+                android:id="@+id/ask_help_detail_text_view"
+                android:layout_column="1"
+                android:textSize="@dimen/text_normal" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="需要人数"
+                android:layout_column="0"
+                android:textSize="@dimen/text_normal" />
+            <EditText
+                android:id="@+id/ask_help_needs_text_view"
+                android:layout_column="1"
+                android:textSize="@dimen/text_normal" />
+        </TableRow>
+        <TableRow
+            android:layout_marginTop="@dimen/margin_large">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="已响应人数"
+                android:layout_column="0"
+                android:textSize="@dimen/text_normal" />
+
+            <TextView
+                android:id="@+id/ask_help_response_num_text_view"
+                android:layout_column="1"
+                android:textSize="@dimen/text_normal" />
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

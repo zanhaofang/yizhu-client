@@ -20,4 +20,15 @@
         android:background="@drawable/locate"
         />
 
+    <Button
+        android:id="@+id/ask_help_refresh_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="50dp"
+        android:background="@drawable/refresh_help"
+        />
+
 </RelativeLayout>
