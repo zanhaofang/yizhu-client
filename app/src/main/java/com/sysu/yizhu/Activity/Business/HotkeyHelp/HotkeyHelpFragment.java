@@ -51,6 +51,9 @@ public class HotkeyHelpFragment extends Fragment {
         isRequest = false;
         isFirstLoc = true;
 
+        mMapView.showScaleControl(false);
+        mMapView.showZoomControls(false);
+
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMyLocationEnabled(true);
         BitmapDescriptor bitmapDesc = BitmapDescriptorFactory.fromResource(R.drawable.location);
