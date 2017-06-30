@@ -13,7 +13,9 @@ import android.view.View.OnClickListener;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.avos.avoscloud.AVInstallation;
 import com.sysu.yizhu.Activity.Business.AskHelp.AskHelpFragment;
 import com.sysu.yizhu.Activity.Business.AskQuestion.AskQuestionFragment;
 import com.sysu.yizhu.Activity.Business.HotkeyHelp.HotkeyHelpFragment;
@@ -22,12 +24,17 @@ import com.sysu.yizhu.Activity.Login.SignInActivity;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;
+import com.sysu.yizhu.Util.HttpUtil;
+
+import java.util.HashMap;
 
 /**
  * Created by QianZixuan on 2017/4/19.
  * Description: 主页面Activity
  */
 public class MainActivity extends AppCompatActivity implements OnClickListener{
+    private static final String updateObjectIdUrl = "http://112.74.165.37:8080/user/updateObjectId";
+
     //下方bar的按钮
     private Button hotkey_help_button;
     private Button ask_help_button;
@@ -76,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         my_info_button.setOnClickListener(this);
 
         setDefaultFragment();
+
+        updateObjectId();
     }
 
     @Override
@@ -123,5 +132,33 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
                 break;
         }
         transaction.commit();
+    }
+
+    private void updateObjectId() {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("objectId", AVInstallation.getCurrentInstallation().getObjectId());
+        HttpUtil.post(updateObjectIdUrl, params, new HttpUtil.HttpResponseCallBack() {
+            @Override
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        Toast.makeText(MainActivity.this, "请求成功", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 401:
+                        Toast.makeText(MainActivity.this, "未登录", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 404:
+                        Toast.makeText(MainActivity.this, "objectId不存在", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
     }
 }
