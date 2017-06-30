@@ -18,7 +18,7 @@
                 android:text="主题"
                 android:layout_column="0"
                 android:textSize="@dimen/text_normal" />
-            <TextView
+            <EditText
                 android:id="@+id/ask_help_title_text_view"
                 android:layout_column="1"
                 android:textSize="@dimen/text_normal"/>
@@ -31,10 +31,10 @@
                 android:text="详情"
                 android:layout_column="0"
                 android:textSize="@dimen/text_normal" />
-            <TextView
+            <EditText
                 android:id="@+id/ask_help_detail_text_view"
                 android:layout_column="1"
-                android:textSize="@dimen/text_normal" />
+                android:textSize="@dimen/text_normal"/>
         </TableRow>
 
         <TableRow>
@@ -44,27 +44,12 @@
                 android:text="需要人数"
                 android:layout_column="0"
                 android:textSize="@dimen/text_normal" />
-            <TextView
+            <EditText
                 android:id="@+id/ask_help_needs_text_view"
                 android:layout_column="1"
-                android:textSize="@dimen/text_normal" />
-        </TableRow>
-        <TableRow
-            android:layout_marginTop="@dimen/margin_large">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="已响应人数"
-                android:layout_column="0"
-                android:textSize="@dimen/text_normal" />
-
-            <TextView
-                android:id="@+id/ask_help_response_num_text_view"
-                android:layout_column="1"
-                android:textSize="@dimen/text_normal" />
+                android:textSize="@dimen/text_normal"
+                android:inputType="numberDecimal"/>
         </TableRow>
 
     </TableLayout>
-
 </LinearLayout>
