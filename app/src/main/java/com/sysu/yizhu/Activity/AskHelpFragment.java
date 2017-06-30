@@ -21,7 +21,9 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.sysu.yizhu.MapHolder.BMap;
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.Util.SerializableJson;
 
 /**
  * Created by QianZixuan on 2017/4/30.
@@ -38,6 +40,7 @@ public class AskHelpFragment extends Fragment {
     boolean isFirstLoc; //初次定位
 
     private Button hotkey_help_locate;
+    private Button refreshHelpBtn;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +50,9 @@ public class AskHelpFragment extends Fragment {
         //获取地图控件引用
         mMapView = (MapView) view.findViewById(R.id.ask_help_bmapView);
         hotkey_help_locate = (Button) view.findViewById(R.id.ask_help_locate);
+        refreshHelpBtn = (Button) view.findViewById(R.id.ask_help_refresh_btn);
+
+
 
         isRequest = false;
         isFirstLoc = true;
@@ -56,6 +62,7 @@ public class AskHelpFragment extends Fragment {
         BitmapDescriptor bitmapDesc = BitmapDescriptorFactory.fromResource(R.drawable.location);
         mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, bitmapDesc));
 
+        BMap.initBMapMarkerClickListener(mBaiduMap, getActivity());
         findMyLocation();
 
         hotkey_help_locate.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +73,18 @@ public class AskHelpFragment extends Fragment {
             }
         });
 
+        refreshHelpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshAskHelps();
+            }
+        });
+
         return  view;
+    }
+
+    private void refreshAskHelps() {
+        getAndShowAskHelps();
     }
 
     public void findMyLocation() {
@@ -83,7 +101,24 @@ public class AskHelpFragment extends Fragment {
 //      locClientOpt.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
         locClient.setLocOption(locClientOpt);
         locClient.start();
+
     }
+
+    private void getAndShowAskHelps() {
+        SerializableJson json = new SerializableJson();
+        json.put("helpId", "1");
+        json.put("latitude", "21");
+        json.put("longitude", "120");
+        json.put("finished", "false");
+        json.put("title", "抬米");
+        json.put("detail", "帮忙抬米上五楼");
+        json.put("needs", "3");
+        json.put("responseNum", "2");
+        json.put("pushUserId", "12345678911");
+
+        BMap.showAskHelp(mBaiduMap, json);
+    }
+
 
     @Override
     public void onDestroy() {
