@@ -21,12 +21,18 @@ import android.os.CountDownTimer;
 import android.graphics.Color;
 
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;
+import com.sysu.yizhu.Util.HttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Created by QianZixuan on 2017/4/19.
@@ -35,16 +41,6 @@ import java.util.Calendar;
 public class SignUpActivity extends AppCompatActivity {
     private static final String getCodeUrl = "http://112.74.165.37:8080/user/sendSms/";
     private static final String signUpUrl = "http://112.74.165.37:8080/user/register";
-
-    //定义message.what的参数
-    private static final int ERROR = 0;
-    private static final int GET_CODE_OK = 1;
-    private static final int GET_CODE_FAILED = 2;
-    private static final int GET_CODE_FORBIDDEN = 3;
-    private static final int SIGN_UP_OK = 4;
-    private static final int SIGN_UP_FAILED = 5;
-    private static final int SIGN_UP_FORBIDDEN = 6;
-    private static final int SIGN_UP_MISS = 7;
 
     private EditText nameText;
     private Spinner genderSpinner;
@@ -63,10 +59,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private String gender = "male";
 
-    //存储用户名密码
-    private SharedPreferences preference;
-    private  SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +76,6 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton = (Button) findViewById(R.id.sign_up_button);
         passwordText = (EditText) findViewById(R.id.sign_up_password);
         retypePasswordText = (EditText) findViewById(R.id.sign_up_retypePassword);
-
-        //sharedpreference初始化
-        preference = getSharedPreferences("info", MODE_PRIVATE);
-        editor = preference.edit();
 
         //初始化年月日
         Calendar c = Calendar.getInstance();
@@ -195,168 +183,83 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) { // 保存登录成功的用户名密码，并对UI操作
-                case ERROR:
-                    Toast.makeText(SignUpActivity.this, "发生错误，请检查网络连接", Toast.LENGTH_SHORT).show();
-                    break;
-                case GET_CODE_OK:
-                    Toast.makeText(SignUpActivity.this, "验证码已发送到您手机上", Toast.LENGTH_SHORT).show();
-                    break;
-                case GET_CODE_FAILED:
-                    Toast.makeText(SignUpActivity.this, "手机号码已注册", Toast.LENGTH_SHORT).show();
-                    break;
-                case GET_CODE_FORBIDDEN:
-                    Toast.makeText(SignUpActivity.this, "手机号码无效", Toast.LENGTH_SHORT).show();
-                    break;
-                case SIGN_UP_OK:
-                    Toast.makeText(SignUpActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.setClass(SignUpActivity.this, MainActivity.class);
-                    SignUpActivity.this.startActivity(intent);
-                    break;
-                case SIGN_UP_FAILED:
-                    Toast.makeText(SignUpActivity.this, "手机号已被注册", Toast.LENGTH_SHORT).show();
-                    break;
-                case SIGN_UP_FORBIDDEN:
-                    Toast.makeText(SignUpActivity.this, "手机号码无效", Toast.LENGTH_SHORT).show();
-                    break;
-                case SIGN_UP_MISS:
-                    Toast.makeText(SignUpActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
     private void getCode() {
-        new Thread(new Runnable() {
+        HttpUtil.get(getCodeUrl + phoneNumText.getText().toString(), new HttpUtil.HttpResponseCallBack() {
             @Override
-            public void run() {
-                HttpURLConnection connection = null;
-                try {
-                    connection = (HttpURLConnection) (new URL(getCodeUrl + phoneNumText.getText().toString()).openConnection()); // 建立连接
-                    connection.setRequestMethod("GET");
-                    connection.setReadTimeout(5000);
-                    connection.setConnectTimeout(5000);
-                    connection.connect();
-
-                    int code = connection.getResponseCode(); // 获取服务器响应
-                    Message msg = Message.obtain();
-                    switch (code) {
-                        case 200:
-                            msg.what = GET_CODE_OK;
-                            handler.sendMessage(msg);
-                            break;
-                        case 400:
-                            msg.what = GET_CODE_FAILED;
-                            handler.sendMessage(msg);
-                            break;
-                        case 403:
-                            msg.what = GET_CODE_FORBIDDEN;
-                            handler.sendMessage(msg);
-                            break;
-                        default:
-                            msg.what = ERROR;
-                            handler.sendMessage(msg);
-                            break;
-                    }
-                } catch (Exception e) {
-                    Message msg = Message.obtain();
-                    msg.what = ERROR;
-                    handler.sendMessage(msg);
-                    e.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect(); // 断开连接
-                    }
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        Toast.makeText(SignUpActivity.this, "验证码已发送到您手机上", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 400:
+                        Toast.makeText(SignUpActivity.this, "手机号码已注册", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 403:
+                        Toast.makeText(SignUpActivity.this, "手机号码无效", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
                 }
             }
-        }).start();
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
     }
 
     private void signUp() {
-        new Thread(new Runnable() {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("userId", phoneNumText.getText().toString());
+        params.put("password", passwordText.getText().toString());
+        params.put("code", codeText.getText().toString());
+        params.put("name", nameText.getText().toString());
+        params.put("gender", gender);
+        params.put("birthDate", birthDateText.getText().toString());
+        params.put("location", locationText.getText().toString());
+        HttpUtil.post(signUpUrl, params, new HttpUtil.HttpResponseCallBack() {
             @Override
-            public void run() {
-                HttpURLConnection connection = null;
-                try {
-                    // 请求数据格式
-                    String data = "userId=" + phoneNumText.getText().toString()
-                            + "&password=" + passwordText.getText().toString()
-                            + "&code=" + codeText.getText().toString()
-                            + "&name=" + nameText.getText().toString()
-                            + "&gender=" + gender
-                            + "&birthDate=" + birthDateText.getText().toString()
-                            + "&location=" + locationText.getText().toString();
-
-                    connection = (HttpURLConnection) (new URL(signUpUrl).openConnection()); // 建立连接
-                    connection.setRequestMethod("POST");
-                    connection.setReadTimeout(5000);
-                    connection.setConnectTimeout(5000);
-
-                    // 设置请求的头
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-                    connection.setRequestProperty("Content-Length", String.valueOf(data.getBytes().length));
-
-                    connection.setDoOutput(true);
-                    connection.setDoInput(true);
-
-                    connection.connect();
-
-                    DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-                    out.write(data.getBytes());
-                    out.flush();
-                    out.close();
-
-                    int code = connection.getResponseCode(); // 获取服务器响应
-                    Message msg = Message.obtain();
-                    switch (code) {
-                        case 200:
-                            editor.putString("username", phoneNumText.getText().toString());
-                            editor.putString("password", passwordText.getText().toString());
-                            editor.putString("state", "login");
-                            editor.commit();
-                            final String cookieval = connection.getHeaderField("Set-Cookie");
-                            if (cookieval != null) {
-                                editor.putString("jsessionid", cookieval);
-                                editor.commit();
-                            }
-                            msg.what = SIGN_UP_OK;
-                            handler.sendMessage(msg);
-                            break;
-                        case 400:
-                            msg.what = SIGN_UP_FAILED;
-                            handler.sendMessage(msg);
-                            break;
-                        case 403:
-                            msg.what = SIGN_UP_FORBIDDEN;
-                            handler.sendMessage(msg);
-                            break;
-                        case 450:
-                            msg.what = SIGN_UP_MISS;
-                            handler.sendMessage(msg);
-                            break;
-                        default:
-                            msg.what = ERROR;
-                            handler.sendMessage(msg);
-                            break;
-                    }
-                } catch (Exception e) {
-                    Message msg = Message.obtain();
-                    msg.what = ERROR;
-                    handler.sendMessage(msg);
-                    e.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect(); // 断开连接
-                    }
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        resultAnalysis(result);
+                        Toast.makeText(SignUpActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setClass(SignUpActivity.this, MainActivity.class);
+                        SignUpActivity.this.startActivity(intent);
+                        break;
+                    case 400:
+                        Toast.makeText(SignUpActivity.this, "手机号已被注册", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 403:
+                        Toast.makeText(SignUpActivity.this, "手机号码无效", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 450:
+                        Toast.makeText(SignUpActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
                 }
             }
-        }).start();
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
     }
 
+    private void resultAnalysis(String string) { //解析JSON数据或更新UI
+        JSONObject object = null;
+        try {
+            object = new JSONObject(string);
+
+            UserData.getInstance().setUserId(phoneNumText.getText().toString());
+            UserData.getInstance().setPassword(passwordText.getText().toString());
+            UserData.getInstance().setLoginState(true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

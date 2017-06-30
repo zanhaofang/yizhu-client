@@ -32,17 +32,12 @@ public class AddQuestionActivity extends AppCompatActivity {
     private EditText content;
     private Button submit;
 
-    private SharedPreferences preference;
-    private  SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_question_layout);
 
         AppManager.getAppManager().addActivity(AddQuestionActivity.this);
-        preference = getSharedPreferences("info", MODE_PRIVATE);
-        editor = preference.edit();
 
         title = (EditText) findViewById(R.id.add_question_title);
         content = (EditText) findViewById(R.id.add_question_content);
@@ -66,7 +61,7 @@ public class AddQuestionActivity extends AppCompatActivity {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("title", title.getText().toString());
         params.put("content", content.getText().toString());
-        HttpUtil.post(url, preference.getString("jsessionid", ""), params, new HttpUtil.HttpResponseCallBack() {
+        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
             @Override
             public void onSuccess(int code, String result) {
                 switch (code) {

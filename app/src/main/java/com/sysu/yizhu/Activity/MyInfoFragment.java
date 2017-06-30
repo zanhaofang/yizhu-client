@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.HttpUtil;
 
 import org.json.JSONException;
@@ -59,11 +60,6 @@ public class MyInfoFragment extends Fragment {
 
     private String gender = "male";
 
-    //存储用户名密码
-    private SharedPreferences preference;
-    private  SharedPreferences.Editor editor;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.my_info_layout, container, false);
@@ -77,10 +73,6 @@ public class MyInfoFragment extends Fragment {
         locationText = (EditText) view.findViewById(R.id.my_info_location);
         phoneNumText = (EditText) view.findViewById(R.id.my_info_phoneNum);
         myInfoButton = (Button) view.findViewById(R.id.my_info_button);
-
-        //sharedpreference初始化
-        preference = getActivity().getSharedPreferences("info", Context.MODE_PRIVATE);
-        editor = preference.edit();
 
         Calendar c = Calendar.getInstance();
         year = c.get(Calendar.YEAR);
@@ -185,7 +177,7 @@ public class MyInfoFragment extends Fragment {
         phoneNumText.setEnabled(false);
 
         HashMap<String, String> params = new HashMap<String, String>();
-        HttpUtil.post(getInfoUrl, preference.getString("jsessionid", ""), params, new HttpUtil.HttpResponseCallBack() {
+        HttpUtil.post(getInfoUrl, params, new HttpUtil.HttpResponseCallBack() {
             @Override
             public void onSuccess(int code, String result) {
                 switch (code) {
@@ -216,7 +208,7 @@ public class MyInfoFragment extends Fragment {
         params.put("gender", gender);
         params.put("birthDate", birthDateText.getText().toString());
         params.put("location", locationText.getText().toString());
-        HttpUtil.post(modifyInfoUrl, preference.getString("jsessionid", ""), params, new HttpUtil.HttpResponseCallBack() {
+        HttpUtil.post(modifyInfoUrl, params, new HttpUtil.HttpResponseCallBack() {
             @Override
             public void onSuccess(int code, String result) {
                 switch (code) {

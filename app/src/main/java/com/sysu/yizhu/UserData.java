@@ -8,15 +8,17 @@ import android.content.SharedPreferences;
  * Created by QianZixuan on 2017/6/30.
  */
 public class UserData {
-    private SharedPreferences preference;
-    private  SharedPreferences.Editor editor;
+    private static SharedPreferences preference;
+    private static SharedPreferences.Editor editor;
 
-    private String UserId;
-    private String Password;
-    private String JsessionId;
-    private boolean LoginState;
+    private static UserData instance;
 
-    UserData() {
+    private static String UserId;
+    private static String Password;
+    private static String JsessionId;
+    private static boolean LoginState;
+
+    private UserData() {
         preference = MyApplication.getContext().getSharedPreferences("userData", Context.MODE_PRIVATE);//存储的文件名
         editor = preference.edit();
 
@@ -24,6 +26,13 @@ public class UserData {
         Password = preference.getString("Password", "");
         JsessionId = preference.getString("JsessionId", "");
         LoginState = preference.getBoolean("LoginState", false);
+    }
+
+    public static UserData getInstance() {
+        if (instance == null) {
+            instance = new UserData();
+        }
+        return instance;
     }
 
     public String getUserId() {

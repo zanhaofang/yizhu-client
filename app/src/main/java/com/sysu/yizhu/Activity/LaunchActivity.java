@@ -2,7 +2,6 @@ package com.sysu.yizhu.Activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -10,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;
 import com.sysu.yizhu.Util.HttpUtil;
 import com.sysu.yizhu.Util.PermissionsChecker;
@@ -36,17 +36,12 @@ public class LaunchActivity extends AppCompatActivity {
 
     private static final String url = "http://112.74.165.37:8080/user/login";
 
-    private SharedPreferences preference;
-    private SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.launch_layout);
 
         AppManager.getAppManager().addActivity(LaunchActivity.this);
-        preference = getSharedPreferences("info", MODE_PRIVATE);
-        editor = preference.edit();
 
         mPermissionsChecker = new PermissionsChecker(this);
     }
@@ -65,7 +60,7 @@ public class LaunchActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     //已登录进入主页面，否则登录界面
-                    if (preference.getString("state", "").equals("login")) {
+                    if (UserData.getInstance().isLogin()) {
                         autoSignIn();
                     } else {
                         Intent intent = new Intent();
@@ -93,9 +88,9 @@ public class LaunchActivity extends AppCompatActivity {
 
     private void autoSignIn() {
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("userId", preference.getString("username", ""));
-        params.put("password", preference.getString("password", ""));
-        HttpUtil.post(url, "", params, new HttpUtil.HttpResponseCallBack() {
+        params.put("userId", UserData.getInstance().getUserId());
+        params.put("password", UserData.getInstance().getPassword());
+        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
             @Override
             public void onSuccess(int code, String result) {
                 switch (code) {
@@ -129,9 +124,7 @@ public class LaunchActivity extends AppCompatActivity {
         try {
             object = new JSONObject(string);
 
-            editor.putString("state", "login");
-            editor.putString("jsessionid", object.optString("jsessionid"));
-            editor.commit();
+            UserData.getInstance().setLoginState(true);
         } catch (JSONException e) {
             e.printStackTrace();
         }

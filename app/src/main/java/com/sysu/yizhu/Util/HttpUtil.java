@@ -1,5 +1,7 @@
 package com.sysu.yizhu.Util;
 
+import com.sysu.yizhu.UserData;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -78,7 +80,7 @@ public class HttpUtil {
      * @param params   请求参数
      * @param callBack 回调地址
      */
-    public static void post(final String url, final String sessionId, final Map<String, String> params, final HttpResponseCallBack callBack) {
+    public static void post(final String url, final Map<String, String> params, final HttpResponseCallBack callBack) {
         if (callBack != null) {
             new Thread(new Runnable() {
                 @Override
@@ -93,7 +95,7 @@ public class HttpUtil {
                         conn.setRequestMethod("POST");
                         // 设置请求的头
                         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-                        conn.addRequestProperty("Cookie", sessionId);//加入session id
+                        conn.addRequestProperty("Cookie", UserData.getInstance().getJsessionId());//加入session id
 
                         conn.setDoOutput(true);
                         conn.setDoInput(true);
@@ -125,10 +127,9 @@ public class HttpUtil {
                                 sb.append(strTemp);
                             }
 
-                            final String cookieval = conn.getHeaderField("Set-Cookie"); //在返回的字符串中加入sessionid
+                            final String cookieval = conn.getHeaderField("Set-Cookie"); //保存sessionid
                             if (cookieval != null) {
-                                sb.deleteCharAt(sb.length() - 1);
-                                sb.append(",\"jsessionid\":\"").append(cookieval).append("\"}\n");
+                                UserData.getInstance().setJsessionId(cookieval);
                             }
                         }
 

@@ -1,7 +1,6 @@
 package com.sysu.yizhu.Activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.AppManager;
 import com.sysu.yizhu.Util.HttpUtil;
 
@@ -34,10 +34,6 @@ public class SignInActivity extends AppCompatActivity {
     private TextView forgot_pwd = null;
     private TextView sign_up = null;
 
-    //存储用户名密码
-    private SharedPreferences preference;
-    private  SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +47,6 @@ public class SignInActivity extends AppCompatActivity {
         sign_in = (Button) findViewById(R.id.sign_in);
         forgot_pwd = (TextView) findViewById(R.id.forgot_pwd);
         sign_up = (TextView) findViewById(R.id.sign_up);
-        //sharedpreference初始化
-        preference = getSharedPreferences("info", MODE_PRIVATE);
-        editor = preference.edit();
 
         sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +84,7 @@ public class SignInActivity extends AppCompatActivity {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("userId", sign_in_username.getText().toString());
         params.put("password", sign_in_password.getText().toString());
-        HttpUtil.post(url, "", params, new HttpUtil.HttpResponseCallBack() {
+        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
             @Override
             public void onSuccess(int code, String result) {
                 switch (code) {
@@ -125,11 +118,9 @@ public class SignInActivity extends AppCompatActivity {
         try {
             object = new JSONObject(string);
 
-            editor.putString("username", sign_in_username.getText().toString());
-            editor.putString("password", sign_in_password.getText().toString());
-            editor.putString("state", "login");
-            editor.putString("jsessionid", object.optString("jsessionid"));
-            editor.commit();
+            UserData.getInstance().setUserId(sign_in_username.getText().toString());
+            UserData.getInstance().setPassword(sign_in_password.getText().toString());
+            UserData.getInstance().setLoginState(true);
         } catch (JSONException e) {
             e.printStackTrace();
         }

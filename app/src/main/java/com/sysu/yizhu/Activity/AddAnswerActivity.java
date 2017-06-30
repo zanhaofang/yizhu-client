@@ -26,17 +26,11 @@ public class AddAnswerActivity extends AppCompatActivity {
     private EditText add_answer_content;
     private Button add_answer_submit;
 
-    private SharedPreferences preference;
-    private  SharedPreferences.Editor editor;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_answer_layout);
         AppManager.getAppManager().addActivity(AddAnswerActivity.this);
-
-        preference = getSharedPreferences("info", MODE_PRIVATE);
-        editor = preference.edit();
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -51,7 +45,7 @@ public class AddAnswerActivity extends AppCompatActivity {
                 HashMap<String, String> params = new HashMap<String, String>();
                 params.put("questionId", questionId);
                 params.put("content", add_answer_content.getText().toString());
-                HttpUtil.post(AnswerUrl, preference.getString("jsessionid", ""), params, new HttpUtil.HttpResponseCallBack() {
+                HttpUtil.post(AnswerUrl, params, new HttpUtil.HttpResponseCallBack() {
                     @Override
                     public void onSuccess(int code, String result) {
                         switch (code) {
