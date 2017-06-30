@@ -45,8 +45,8 @@ public class AskHelpFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.ask_help_layout, container, false);
         //获取地图控件引用
-        mMapView = (MapView) view.findViewById(R.id.bmapView);
-        hotkey_help_locate = (Button) view.findViewById(R.id.hotkey_help_locate);
+        mMapView = (MapView) view.findViewById(R.id.ask_help_bmapView);
+        hotkey_help_locate = (Button) view.findViewById(R.id.ask_help_locate);
 
         isRequest = false;
         isFirstLoc = true;
