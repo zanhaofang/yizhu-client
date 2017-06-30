@@ -1,6 +1,7 @@
 package com.sysu.yizhu;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVInstallation;
@@ -16,11 +17,13 @@ public class MyApplication extends Application {
     private static final String LC_APP_ID = "CpwcohsMmxb9sUanQTOBD827-gzGzoHsz";
     private static final String LC_APP_KEY = "aOzT095oxFBfJMn8EptrQlFW";
 
-
+    private static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        context = getApplicationContext();
 
         AVOSCloud.initialize(this, LC_APP_ID, LC_APP_KEY);
 
@@ -39,5 +42,9 @@ public class MyApplication extends Application {
         });
 
         PushService.setDefaultPushCallback(this, MainActivity.class);
+    }
+
+    public static Context getContext() {
+        return context;
     }
 }
