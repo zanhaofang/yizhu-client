@@ -34,7 +34,6 @@ import java.util.HashMap;
  */
 public class MainActivity extends AppCompatActivity implements OnClickListener{
     private static final String updateObjectIdUrl = "http://112.74.165.37:8080/user/updateObjectId";
-    private static final String updateLocationUrl = "http://112.74.165.37:8080/user/updateLocation";
 
     //下方bar的按钮
     private Button hotkey_help_button;
@@ -86,8 +85,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         setDefaultFragment();
 
         updateObjectId();
-
-        updateLocation();
     }
 
     @Override
@@ -152,41 +149,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
                         break;
                     case 404:
                         Toast.makeText(MainActivity.this, "objectId不存在", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(String result, Exception e) {
-
-            }
-        });
-    }
-
-    private void updateLocation() {
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("latitude", "0.0");
-        params.put("longitude", "5.0");
-        HttpUtil.post(updateLocationUrl, params, new HttpUtil.HttpResponseCallBack() {
-            @Override
-            public void onSuccess(int code, String result) {
-                switch (code) {
-                    case 200:
-                        Toast.makeText(MainActivity.this, "请求成功", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 401:
-                        Toast.makeText(MainActivity.this, "未登录", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 403:
-                        Toast.makeText(MainActivity.this, "经纬度错误", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 450:
-                        Toast.makeText(MainActivity.this, "用户未记录安装Id", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 500:
-                        Toast.makeText(MainActivity.this, "服务器错误", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;

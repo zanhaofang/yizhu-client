@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -22,12 +23,17 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.Util.HttpUtil;
+
+import java.util.HashMap;
 
 /**
  * Created by QianZixuan on 2017/4/30.
  * Description: 一键求救fragment
  */
 public class HotkeyHelpFragment extends Fragment {
+    private static final String updateLocationUrl = "http://112.74.165.37:8080/user/updateLocation";
+
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private LocationClient locClient;
@@ -36,6 +42,9 @@ public class HotkeyHelpFragment extends Fragment {
 
     boolean isRequest; //手动请求
     boolean isFirstLoc; //初次定位
+
+    private double latitude;
+    private double longitude;
 
     private Button hotkey_help_locate;
 
@@ -125,6 +134,10 @@ public class HotkeyHelpFragment extends Fragment {
             LatLng ll = new LatLng(location.getLatitude(),location.getLongitude());
             MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, 18.0f);
             if (isFirstLoc || isRequest) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                updateLocation(latitude, longitude);
+
                 mBaiduMap.animateMapStatus(u);
                 isRequest = false;
             }
@@ -135,5 +148,45 @@ public class HotkeyHelpFragment extends Fragment {
         public void onConnectHotSpotMessage(String s, int i) {
 
         }
+    }
+
+    private void updateLocation(double latitude, double longitude) {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("latitude", Double.toString(latitude));
+        params.put("longitude", Double.toString(longitude));
+        HttpUtil.post(updateLocationUrl, params, new HttpUtil.HttpResponseCallBack() {
+            @Override
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "请求成功", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 401:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未登录", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 403:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "经纬度错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 450:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "用户未记录安装Id", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 500:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "服务器错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
     }
 }
