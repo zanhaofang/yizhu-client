@@ -493,7 +493,9 @@ public class AskHelpFragment extends Fragment {
                 isRequest = false;
             }
             isFirstLoc = false;
-            updateLocation();
+            if (getActivity() != null) {
+                updateLocation();
+            }
         }
 
         @Override
