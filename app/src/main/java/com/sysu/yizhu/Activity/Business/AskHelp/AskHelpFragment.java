@@ -26,12 +26,11 @@ import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.sysu.yizhu.Activity.Business.MainActivity;
-import com.sysu.yizhu.Activity.Login.LaunchActivity;
-import com.sysu.yizhu.MapHolder.BMap;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.HttpUtil;
@@ -41,9 +40,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
-
-import static com.avos.avoscloud.Messages.OpType.count;
 
 /**
  * Created by QianZixuan on 2017/4/30.
@@ -62,6 +58,9 @@ public class AskHelpFragment extends Fragment {
 
     private Button hotkey_help_locate;
     private Button refreshHelpBtn;
+    private Button pushBtn;
+
+    private static final String SERVER_HOST = "http://112.74.165.37:8080";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,8 +70,6 @@ public class AskHelpFragment extends Fragment {
         //获取地图控件引用
         mMapView = (MapView) view.findViewById(R.id.ask_help_bmapView);
         hotkey_help_locate = (Button) view.findViewById(R.id.ask_help_locate);
-        refreshHelpBtn = (Button) view.findViewById(R.id.ask_help_refresh_btn);
-
 
 
         isRequest = false;
@@ -94,6 +91,7 @@ public class AskHelpFragment extends Fragment {
             }
         });
 
+        refreshHelpBtn = (Button) view.findViewById(R.id.ask_help_refresh_btn);
         refreshHelpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,23 +99,7 @@ public class AskHelpFragment extends Fragment {
             }
         });
 
-        Button objectHelpBtn = (Button) view.findViewById(R.id.ask_help_object_btn);
-        objectHelpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateObjectId();
-            }
-        });
-
-        Button locationHelpBtn = (Button) view.findViewById(R.id.ask_help_location_btn);
-        locationHelpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateLocation();
-            }
-        });
-
-        Button pushBtn = (Button) view.findViewById(R.id.ask_help_push_btn);
+        pushBtn = (Button) view.findViewById(R.id.ask_help_push_btn);
         pushBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,8 +107,189 @@ public class AskHelpFragment extends Fragment {
             }
         });
 
-
         return  view;
+    }
+
+    // 接口方法，更新定位
+    private void updateLocation() {
+        String url = SERVER_HOST + "/user/updateLocation";
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("latitude", String.valueOf(nowLocation.latitude));
+        params.put("longitude", String.valueOf(nowLocation.longitude));
+        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
+            @Override
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        Toast.makeText(getActivity(), "更新定位成功！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 401:
+                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 403:
+                        Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 450:
+                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 500:
+                        Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
+    }
+
+    // 接口方法，发起求助
+    private void pushAskHelp(LatLng location, String title, String detail, String needs) {
+        String url = SERVER_HOST + "/help/push";
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("latitude", String.valueOf(location.latitude));
+        params.put("longitude", String.valueOf(location.longitude));
+        params.put("title", title);
+        params.put("detail", detail);
+        params.put("needs", needs);
+        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
+            @Override
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        Toast.makeText(getActivity(), "求助成功！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 401:
+                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 402:
+                        Toast.makeText(getActivity(), "需求人数无效！应在1-10人间", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 403:
+                        Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 450:
+                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 500:
+                        Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
+
+    }
+
+    // 接口方法，响应求助
+    private void responseHelp(String helpId) {
+        String url = SERVER_HOST + "/help/response";
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("helpId", helpId);
+        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
+            @Override
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        Toast.makeText(getActivity(), "成功！快去目的地帮助他人吧！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 401:
+                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 402:
+                        Toast.makeText(getActivity(), "该求助人数已满！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 403:
+                        Toast.makeText(getActivity(), "已响应，不能重复响应！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 404:
+                        Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 450:
+                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
+    }
+
+    // 接口方法，结束求助
+    private void finishHelp(String helpId) {
+        String url = SERVER_HOST + "/help/finish";
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("helpId", helpId);
+        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
+            @Override
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        Toast.makeText(getActivity(), "成功！已结束。", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 401:
+                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 404:
+                        Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 450:
+                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
+    }
+
+    private void makePushDialog() {
+        LayoutInflater factory = LayoutInflater.from(getActivity());
+        View dialogView = factory.inflate(R.layout.ask_help_push, null);
+
+        final TextView titleTv = (TextView) dialogView.findViewById(R.id.ask_help_title_text_view);
+        final TextView detailTv = (TextView) dialogView.findViewById(R.id.ask_help_detail_text_view);
+        final TextView needsTv = (TextView) dialogView.findViewById(R.id.ask_help_needs_text_view);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setView(dialogView);
+
+        builder.setPositiveButton("求助", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                pushAskHelp(nowLocation, titleTv.getText().toString(), detailTv.getText().toString(), needsTv.getText().toString());
+            }
+        });
+
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.create();
+        builder.show();
     }
 
     private void refreshAskHelps() {
@@ -173,7 +336,7 @@ public class AskHelpFragment extends Fragment {
                                                     json.put("needs", object.optString("needs"));
                                                     json.put("responseNum", object.optString("responseNum"));
                                                     json.put("pushUserId", object.optString("pushUserId"));
-                                                    BMap.showAskHelp(mBaiduMap, json);
+                                                    showAskHelp(json);
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -204,115 +367,6 @@ public class AskHelpFragment extends Fragment {
             }
         });
 
-    }
-
-    private void pushAskHelp(LatLng location, String title, String detail, String needs) {
-        String url = SERVER_HOST + "/help/push";
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("latitude", String.valueOf(location.latitude));
-        params.put("longitude", String.valueOf(location.longitude));
-        params.put("title", title);
-        params.put("detail", detail);
-        params.put("needs", needs);
-        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
-            @Override
-            public void onSuccess(int code, String result) {
-                switch (code) {
-                    case 200:
-                        Toast.makeText(getActivity(), "求助成功！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 402:
-                        Toast.makeText(getActivity(), "需求人数无效！应在1-10人间", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 403:
-                        Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 500:
-                        Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(String result, Exception e) {
-
-            }
-        });
-
-    }
-
-    private static final String SERVER_HOST = "http://112.74.165.37:8080";
-    private void updateObjectId() {
-        String url = SERVER_HOST + "/user/updateObjectId";
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("objectId", AVInstallation.getCurrentInstallation().getObjectId());
-        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
-            @Override
-            public void onSuccess(int code, String result) {
-                switch (code) {
-                    case 200:
-                        Toast.makeText(getActivity(), "更新ObjectId成功！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 404:
-                        Toast.makeText(getActivity(), "ObjectId不存在！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(String result, Exception e) {
-
-            }
-        });
-    }
-
-    private void updateLocation() {
-        String url = SERVER_HOST + "/user/updateLocation";
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("latitude", String.valueOf(nowLocation.latitude));
-        params.put("longitude", String.valueOf(nowLocation.longitude));
-        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
-            @Override
-            public void onSuccess(int code, String result) {
-                switch (code) {
-                    case 200:
-                        Toast.makeText(getActivity(), "更新定位成功！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 403:
-                        Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 500:
-                        Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(String result, Exception e) {
-
-            }
-        });
     }
 
     public void findMyLocation() {
@@ -382,105 +436,6 @@ public class AskHelpFragment extends Fragment {
         });
     }
 
-    private void responseHelp(String helpId) {
-        String url = SERVER_HOST + "/help/response";
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("helpId", helpId);
-        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
-            @Override
-            public void onSuccess(int code, String result) {
-                switch (code) {
-                    case 200:
-                        Toast.makeText(getActivity(), "成功！快去目的地帮助他人吧！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 402:
-                        Toast.makeText(getActivity(), "该求助人数已满！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 403:
-                        Toast.makeText(getActivity(), "已响应，不能重复响应！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 404:
-                        Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(String result, Exception e) {
-
-            }
-        });
-    }
-
-    private void finishHelp(String helpId) {
-        String url = SERVER_HOST + "/help/finish";
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("helpId", helpId);
-        HttpUtil.post(url, params, new HttpUtil.HttpResponseCallBack() {
-            @Override
-            public void onSuccess(int code, String result) {
-                switch (code) {
-                    case 200:
-                        Toast.makeText(getActivity(), "成功！已结束。", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 404:
-                        Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(String result, Exception e) {
-
-            }
-        });
-    }
-
-    private void makePushDialog() {
-        LayoutInflater factory = LayoutInflater.from(getActivity());
-        View dialogView = factory.inflate(R.layout.ask_help_push, null);
-
-        final TextView titleTv = (TextView) dialogView.findViewById(R.id.ask_help_title_text_view);
-        final TextView detailTv = (TextView) dialogView.findViewById(R.id.ask_help_detail_text_view);
-        final TextView needsTv = (TextView) dialogView.findViewById(R.id.ask_help_needs_text_view);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(dialogView);
-
-        builder.setPositiveButton("求助", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                pushAskHelp(nowLocation, titleTv.getText().toString(), detailTv.getText().toString(), needsTv.getText().toString());
-            }
-        });
-
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.create();
-        builder.show();
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -495,12 +450,25 @@ public class AskHelpFragment extends Fragment {
         mMapView.onResume();
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
         //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
         mMapView.onPause();
+    }
+
+    private void showAskHelp(SerializableJson helpData) {
+        LatLng latLng = new LatLng(Double.valueOf(helpData.get("latitude")), Double.valueOf(helpData.get("longitude")));
+        // 图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.locate_help_icon);
+
+        OverlayOptions overlayOptions = new MarkerOptions().position(latLng)
+                .icon(bitmap).zIndex(10);
+        Marker marker = (Marker) (mBaiduMap.addOverlay(overlayOptions));
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("helpData", helpData);
+        marker.setExtraInfo(bundle);
     }
 
     private class MyLocationListener implements BDLocationListener {
@@ -525,6 +493,7 @@ public class AskHelpFragment extends Fragment {
                 isRequest = false;
             }
             isFirstLoc = false;
+            updateLocation();
         }
 
         @Override

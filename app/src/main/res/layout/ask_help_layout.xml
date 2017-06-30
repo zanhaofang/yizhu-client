@@ -32,36 +32,14 @@
         />
 
     <Button
-        android:id="@+id/ask_help_object_btn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="80dp"
-        android:layout_marginRight="50dp"
-        android:background="@drawable/refresh_help"
-        />
-
-    <Button
-        android:id="@+id/ask_help_location_btn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="140dp"
-        android:layout_marginRight="50dp"
-        android:background="@drawable/refresh_help"
-        />
-
-    <Button
         android:id="@+id/ask_help_push_btn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="200dp"
-        android:layout_marginRight="50dp"
-        android:background="@drawable/refresh_help"
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="120dp"
+        android:background="@drawable/add"
         />
 
 </RelativeLayout>
