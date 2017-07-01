@@ -1,6 +1,7 @@
-package com.sysu.yizhu.Activity.Business.HotkeyHelp;
+package com.sysu.yizhu.Activity.Business.Sos;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +26,18 @@ import com.baidu.mapapi.model.LatLng;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.HttpUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 
 /**
  * Created by QianZixuan on 2017/4/30.
  * Description: 一键求救fragment
  */
-public class HotkeyHelpFragment extends Fragment {
+public class SosFragment extends Fragment {
     private static final String updateLocationUrl = "http://112.74.165.37:8080/user/updateLocation";
+    private static final String sosPushUrl = "http://112.74.165.37:8080/sos/push";
 
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -47,15 +52,19 @@ public class HotkeyHelpFragment extends Fragment {
     private double longitude;
 
     private Button hotkey_help_locate;
+    private Button hotkey_help_push;
+    private Button hotkey_help_response;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         SDKInitializer.initialize(getActivity().getApplicationContext());
 
-        View view = inflater.inflate(R.layout.hotkey_help_layout, container, false);
-        //获取地图控件引用
+        View view = inflater.inflate(R.layout.sos_layout, container, false);
+        //获取控件引用
         mMapView = (MapView) view.findViewById(R.id.bmapView);
         hotkey_help_locate = (Button) view.findViewById(R.id.hotkey_help_locate);
+        hotkey_help_push = (Button) view.findViewById(R.id.hotkey_help_push);
+        hotkey_help_response = (Button) view.findViewById(R.id.hotkey_help_response);
 
         isRequest = false;
         isFirstLoc = true;
@@ -78,6 +87,20 @@ public class HotkeyHelpFragment extends Fragment {
             }
         });
 
+        hotkey_help_push.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sosPush();
+            }
+        });
+
+        hotkey_help_response.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sosResponse();
+            }
+        });
+
         return  view;
     }
 
@@ -95,25 +118,6 @@ public class HotkeyHelpFragment extends Fragment {
 //      locClientOpt.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
         locClient.setLocOption(locClientOpt);
         locClient.start();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
-        mMapView.onDestroy();
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
-        mMapView.onResume();
-    }
-    @Override
-    public void onPause() {
-        super.onPause();
-        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
-        mMapView.onPause();
     }
 
     private class MyLocationListener implements BDLocationListener{
@@ -188,5 +192,83 @@ public class HotkeyHelpFragment extends Fragment {
 
             }
         });
+    }
+
+    private void sosPush() {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("latitude", Double.toString(latitude));
+        params.put("longitude", Double.toString(longitude));
+        HttpUtil.post(sosPushUrl, params, new HttpUtil.HttpResponseCallBack() {
+            @Override
+            public void onSuccess(int code, String result) {
+                switch (code) {
+                    case 200:
+                        if (getActivity() != null) {
+                            String sosId = "";
+                            JSONObject object = null;
+                            try {
+                                object = new JSONObject(result);
+
+                                sosId = object.optString("sosId");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(), SosPushActivity.class);
+                            intent.putExtra("sosId",sosId); //传送Id
+                            getActivity().startActivity(intent);
+                        }
+                        break;
+                    case 401:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未登录", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 403:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "经纬度错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 450:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "用户未记录安装Id", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 500:
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "服务器错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(String result, Exception e) {
+
+            }
+        });
+    }
+
+    private void sosResponse() {
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), SosResponseActivity.class);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
+        mMapView.onDestroy();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
+        mMapView.onResume();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
+        mMapView.onPause();
     }
 }

@@ -1,16 +1,17 @@
-package com.sysu.yizhu.Activity.Business.AskQuestion;
+package com.sysu.yizhu.Activity.Business.Sos;
 
-import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.view.LayoutInflater;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.sysu.yizhu.Activity.Business.AskQuestion.QuestionDetailActivity;
 import com.sysu.yizhu.R;
+import com.sysu.yizhu.Util.AppManager;
 import com.sysu.yizhu.Util.HttpUtil;
 
 import org.json.JSONArray;
@@ -23,69 +24,51 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by QianZixuan on 2017/4/30.
- * Description: 提问fragment
+ * Created by QianZixuan on 2017/7/1.
  */
-public class AskQuestionFragment extends ListFragment {
-    private static final String getAllQuestionIdUrl = "http://112.74.165.37:8080/question/getAllId";
-    private static final String getQusetionByIdUrl = "http://112.74.165.37:8080/question/digest/";
-
-    private FloatingActionButton addQuestion;
+public class SosResponseActivity extends AppCompatActivity {
+    private static final String getAllValidSosIdUrl = "http://112.74.165.37:8080/sos/allValidId";
+    private static final String getSosByIdUrl = "http://112.74.165.37:8080/sos/get/"; // +sosId
 
     private SimpleAdapter adapter;
 
     private List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
+    private ListView sos_response_push_list;
+
     private int count;
-    private String [] data;
+    private String[] data;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.ask_question_layout, container, false);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.sos_response_layout);
 
-        addQuestion = (FloatingActionButton) view.findViewById(R.id.addQuestion);
+        sos_response_push_list = (ListView) findViewById(R.id.sos_response_push_list);
 
-        addQuestion.setOnClickListener(new View.OnClickListener() {
+        adapter = new SimpleAdapter(SosResponseActivity.this, getData(), R.layout.sos_response_push_list_item_layout,
+                new String[] {"createTime", "finished"},
+                new int[] {R.id.sos_response_push_list_createTime, R.id.sos_response_push_list_finished});
+        sos_response_push_list.setAdapter(adapter);
+
+        sos_response_push_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                if (getActivity() != null) {
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), AddQuestionActivity.class);
-                    getActivity().startActivity(intent);
-                }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setClass(SosResponseActivity.this, SosResponseDetailActivity.class);
+                intent.putExtra("sosId", list.get(position).get("sosId")); //传送questionId
+                SosResponseActivity.this.startActivity(intent);
             }
         });
 
-        return view;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        adapter = new SimpleAdapter(getActivity(), getData(), R.layout.question_item_layout,
-                new String[] {"userName", "title", "createDate"},
-                new int[] {R.id.questionItemUserName, R.id.questionItemTitle, R.id.questionItemCreateDate});
-        setListAdapter(adapter);
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        //listview Item点击事件
-        if (getActivity() != null) {
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), QuestionDetailActivity.class);
-            intent.putExtra("questionId", list.get(position).get("questionId")); //传送questionId
-            getActivity().startActivity(intent);
-        }
+        AppManager.getAppManager().addActivity(SosResponseActivity.this);
     }
 
     private List<Map<String, String>> getData() {
         list.clear(); //清空Adapter中的数据
         count = 0;
 
-        HttpUtil.get(getAllQuestionIdUrl, new HttpUtil.HttpResponseCallBack() { //获得所有问题id
+        HttpUtil.get(getAllValidSosIdUrl, new HttpUtil.HttpResponseCallBack() { //获得所有id
             @Override
             public void onSuccess(int code, String result) {
                 switch (code) {
@@ -104,7 +87,7 @@ public class AskQuestionFragment extends ListFragment {
                             e.printStackTrace();
                         } finally {
                             for (int i = 0; i < count; i++) {
-                                HttpUtil.get(getQusetionByIdUrl + data[i], new HttpUtil.HttpResponseCallBack() { //根据id获取问题
+                                HttpUtil.get(getSosByIdUrl + data[i], new HttpUtil.HttpResponseCallBack() { //根据id获取
                                     @Override
                                     public void onSuccess(int code, String result) {
                                         switch (code) {
@@ -114,11 +97,12 @@ public class AskQuestionFragment extends ListFragment {
                                                     object = new JSONObject(result);
 
                                                     Map<String, String> map = new HashMap<String, String>();
-                                                    map.put("questionId", object.optString("questionId"));
-                                                    map.put("userId", object.optString("userId"));
-                                                    map.put("userName", object.optString("userName"));
-                                                    map.put("title", object.optString("title"));
-                                                    map.put("createDate", object.optString("createDate"));
+                                                    map.put("sosId", object.optString("sosId"));
+                                                    map.put("latitude", object.optString("latitude"));
+                                                    map.put("longitude", object.optString("longitude"));
+                                                    map.put("createTime", object.optString("createTime"));
+                                                    map.put("finished", object.optString("finished"));
+                                                    map.put("pushUserId", object.optString("pushUserId"));
                                                     list.add(map);
                                                     adapter.notifyDataSetChanged(); //更新adapter数据
                                                 } catch (JSONException e) {

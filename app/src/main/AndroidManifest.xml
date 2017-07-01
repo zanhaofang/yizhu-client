@@ -76,6 +76,15 @@
         <activity android:name=".Activity.Business.AskQuestion.AddAnswerActivity">
         </activity>
 
+        <activity android:name=".Activity.Business.Sos.SosPushActivity">
+        </activity>
+
+        <activity android:name=".Activity.Business.Sos.SosResponseActivity">
+        </activity>
+
+        <activity android:name=".Activity.Business.Sos.SosResponseDetailActivity">
+        </activity>
+
     </application>
 
 </manifest>

@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVInstallation;
 import com.sysu.yizhu.Activity.Business.AskHelp.AskHelpFragment;
 import com.sysu.yizhu.Activity.Business.AskQuestion.AskQuestionFragment;
-import com.sysu.yizhu.Activity.Business.HotkeyHelp.HotkeyHelpFragment;
+import com.sysu.yizhu.Activity.Business.Sos.SosFragment;
 import com.sysu.yizhu.Activity.Business.MyInfo.MyInfoFragment;
 import com.sysu.yizhu.Activity.Login.SignInActivity;
 import com.sysu.yizhu.R;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     private Button my_info_button;
 
     //fragment
-    private HotkeyHelpFragment hotkey_help_fragment;
+    private SosFragment hotkey_help_fragment;
     private AskHelpFragment ask_help_fragment;
     private AskQuestionFragment ask_question_fragment;
     private MyInfoFragment my_info_fragment;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     private void setDefaultFragment() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        hotkey_help_fragment = new HotkeyHelpFragment();
+        hotkey_help_fragment = new SosFragment();
         transaction.replace(R.id.main_content, hotkey_help_fragment);
         transaction.commit();
     }
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         switch (v.getId()) {
             case R.id.hotkey_help:
                 if (hotkey_help_fragment == null)
-                    hotkey_help_fragment = new HotkeyHelpFragment();
+                    hotkey_help_fragment = new SosFragment();
                 transaction.replace(R.id.main_content, hotkey_help_fragment);
                 break;
             case R.id.ask_help:
