@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
-import com.sysu.yizhu.Activity.Business.AskQuestion.QuestionDetailActivity;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.AppManager;
 import com.sysu.yizhu.Util.HttpUtil;
@@ -23,6 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.util.PtrLocalDisplay;
+
 /**
  * Created by QianZixuan on 2017/7/1.
  */
@@ -34,6 +40,7 @@ public class SosResponseActivity extends AppCompatActivity {
 
     private List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
+    private PtrFrameLayout mPtrFrame;
     private ListView sos_response_push_list;
 
     private int count;
@@ -44,9 +51,30 @@ public class SosResponseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sos_response_layout);
 
+        mPtrFrame = (PtrFrameLayout) findViewById(R.id.sos_response_ptr_frame);
         sos_response_push_list = (ListView) findViewById(R.id.sos_response_push_list);
 
-        adapter = new SimpleAdapter(SosResponseActivity.this, getData(), R.layout.sos_response_push_list_item_layout,
+        final PtrClassicDefaultHeader header = new PtrClassicDefaultHeader(getApplicationContext());
+        header.setPadding(0, PtrLocalDisplay.dp2px(15), 0, 0);
+
+        mPtrFrame.setHeaderView(header);
+        mPtrFrame.addPtrUIHandler(header);
+
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                getData();
+                Toast.makeText(SosResponseActivity.this, "下拉刷新", Toast.LENGTH_SHORT).show();
+                mPtrFrame.refreshComplete();
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
+
+        adapter = new SimpleAdapter(SosResponseActivity.this, list, R.layout.sos_response_push_list_item_layout,
                 new String[] {"createTime", "finished"},
                 new int[] {R.id.sos_response_push_list_createTime, R.id.sos_response_push_list_finished});
         sos_response_push_list.setAdapter(adapter);
@@ -60,6 +88,8 @@ public class SosResponseActivity extends AppCompatActivity {
                 SosResponseActivity.this.startActivity(intent);
             }
         });
+
+        getData();
 
         AppManager.getAppManager().addActivity(SosResponseActivity.this);
     }
@@ -134,7 +164,7 @@ public class SosResponseActivity extends AppCompatActivity {
 
             }
         });
-
+        adapter.notifyDataSetChanged();
         return list;
     }
 }

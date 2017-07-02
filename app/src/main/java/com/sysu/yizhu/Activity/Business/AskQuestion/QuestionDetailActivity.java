@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.AppManager;
@@ -22,6 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.util.PtrLocalDisplay;
+
 /**
  * Created by QianZixuan on 2017/6/27.
  */
@@ -30,6 +37,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private static final String getAllAnswerIdUrl = "http://112.74.165.37:8080/question/getAnswerIds/"; //{questionId}
     private static final String getAnswerByIdUrl = "http://112.74.165.37:8080/question/getAnswer/"; //{answerId}
 
+    private PtrFrameLayout mPtrFrame;
     private ListView answer_list;
     private FloatingActionButton addAnswer;
     private TextView question_username;
@@ -50,6 +58,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.question_detail_layout);
 
+        mPtrFrame = (PtrFrameLayout) findViewById(R.id.question_detail_ptr_frame);
         answer_list = (ListView) findViewById(R.id.answer_list);
         addAnswer = (FloatingActionButton) findViewById(R.id.addAnswer);
         question_username = (TextView) findViewById(R.id.question_username);
@@ -61,9 +70,27 @@ public class QuestionDetailActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         questionId = bundle.getString("questionId");
 
-        getQuestionDetail();
+        final PtrClassicDefaultHeader header = new PtrClassicDefaultHeader(getApplicationContext());
+        header.setPadding(0, PtrLocalDisplay.dp2px(15), 0, 0);
 
-        adapter = new SimpleAdapter(QuestionDetailActivity.this, getAnswerList(), R.layout.answer_item_layout,
+        mPtrFrame.setHeaderView(header);
+        mPtrFrame.addPtrUIHandler(header);
+
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                getAnswerList();
+                Toast.makeText(QuestionDetailActivity.this, "下拉刷新", Toast.LENGTH_SHORT).show();
+                mPtrFrame.refreshComplete();
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
+
+        adapter = new SimpleAdapter(QuestionDetailActivity.this, list, R.layout.answer_item_layout,
                 new String[] {"userName", "createDate", "content"},
                 new int[] {R.id.answer_username, R.id.answer_createDate, R.id.answer_content});
         answer_list.setAdapter(adapter);
@@ -77,6 +104,9 @@ public class QuestionDetailActivity extends AppCompatActivity {
                 QuestionDetailActivity.this.startActivity(intent);
             }
         });
+
+        getQuestionDetail();
+        getAnswerList();
 
         AppManager.getAppManager().addActivity(QuestionDetailActivity.this);
     }
@@ -185,7 +215,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
             }
         });
-
+        adapter.notifyDataSetChanged(); //更新adapter数据
         return list;
     }
 }

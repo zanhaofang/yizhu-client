@@ -7,6 +7,9 @@
     <TextView
         android:id="@+id/answer_username"
         android:hint="username"
+        android:textSize="10dp"
+        android:textColor="#D1D1D1"
+        style="@style/AskQuestionListItemPadding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
@@ -14,6 +17,9 @@
     <TextView
         android:id="@+id/answer_createDate"
         android:hint="createDate"
+        android:textSize="10dp"
+        android:textColor="#D1D1D1"
+        style="@style/AskQuestionListItemPadding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
@@ -21,6 +27,9 @@
     <TextView
         android:id="@+id/answer_content"
         android:hint="content"
+        android:textSize="16dp"
+        android:textColor="#000000"
+        style="@style/AskQuestionListItemPadding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
