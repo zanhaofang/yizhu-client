@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.avos.avoscloud.AVInstallation;
 import com.sysu.yizhu.Activity.Business.AskHelp.AskHelpFragment;
 import com.sysu.yizhu.Activity.Business.AskQuestion.AskQuestionFragment;
@@ -31,17 +33,11 @@ import java.util.HashMap;
  * Created by QianZixuan on 2017/4/19.
  * Description: 主页面Activity
  */
-public class MainActivity extends AppCompatActivity implements OnClickListener{
+public class MainActivity extends AppCompatActivity{
     private static final String updateObjectIdUrl = "http://112.74.165.37:8080/user/updateObjectId";
 
-    //下方bar的按钮
-    private Button hotkey_help_button;
-    private Button ask_help_button;
-    private Button ask_question_button;
-    private Button my_info_button;
-
     //fragment
-    private SosFragment hotkey_help_fragment;
+    private SosFragment sos_fragment;
     private AskHelpFragment ask_help_fragment;
     private AskQuestionFragment ask_question_fragment;
     private MyInfoFragment my_info_fragment;
@@ -50,8 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     private void setDefaultFragment() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        hotkey_help_fragment = new SosFragment();
-        transaction.replace(R.id.main_content, hotkey_help_fragment);
+        sos_fragment = new SosFragment();
+        transaction.replace(R.id.main_content, sos_fragment);
         transaction.commit();
     }
 
@@ -67,23 +63,66 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
 
-        AppManager.getAppManager().finishAllActivity();
-        AppManager.getAppManager().addActivity(MainActivity.this);
+        BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
+        bottomNavigationBar
+                .addItem(new BottomNavigationItem(R.drawable.sos, "求救"))
+                .addItem(new BottomNavigationItem(R.drawable.help, "求助"))
+                .addItem(new BottomNavigationItem(R.drawable.question, "提问"))
+                .addItem(new BottomNavigationItem(R.drawable.myinfo, "我"))
+                .setActiveColor(R.color.colorPrimary)
+                .setFirstSelectedPosition(0)
+                .setMode(BottomNavigationBar.MODE_FIXED)
+                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC)
+                .initialise();
 
-        //初始化按钮并设置点击事件
-        hotkey_help_button = (Button) findViewById(R.id.hotkey_help);
-        ask_help_button = (Button) findViewById(R.id.ask_help);
-        ask_question_button = (Button) findViewById(R.id.ask_question);
-        my_info_button = (Button) findViewById(R.id.my_info);
+        bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position) {
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction transaction = fm.beginTransaction();
 
-        hotkey_help_button.setOnClickListener(this);
-        ask_help_button.setOnClickListener(this);
-        ask_question_button.setOnClickListener(this);
-        my_info_button.setOnClickListener(this);
+                switch (position) {
+                    case 0:
+                        if (sos_fragment == null)
+                            sos_fragment = new SosFragment();
+                        transaction.replace(R.id.main_content, sos_fragment);
+                        break;
+                    case 1:
+                        if (ask_help_fragment == null)
+                            ask_help_fragment = new AskHelpFragment();
+                        transaction.replace(R.id.main_content, ask_help_fragment);
+                        break;
+                    case 2:
+                        if (ask_question_fragment == null)
+                            ask_question_fragment = new AskQuestionFragment();
+                        transaction.replace(R.id.main_content, ask_question_fragment);
+                        break;
+                    case 3:
+                        if (my_info_fragment == null)
+                            my_info_fragment = new MyInfoFragment();
+                        transaction.replace(R.id.main_content, my_info_fragment);
+                        break;
+                }
+                transaction.commit();
+            }
+
+            @Override
+            public void onTabUnselected(int position) {
+
+            }
+
+            @Override
+            public void onTabReselected(int position) {
+
+            }
+        });
 
         setDefaultFragment();
 
         updateObjectId();
+
+        AppManager.getAppManager().finishAllActivity();
+        AppManager.getAppManager().addActivity(MainActivity.this);
     }
 
     @Override
@@ -100,37 +139,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
                 break;
         }
         return true;
-    }
-
-    @Override
-    public void onClick(View v) {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-
-        //按照id处理点击事件
-        switch (v.getId()) {
-            case R.id.hotkey_help:
-                if (hotkey_help_fragment == null)
-                    hotkey_help_fragment = new SosFragment();
-                transaction.replace(R.id.main_content, hotkey_help_fragment);
-                break;
-            case R.id.ask_help:
-                if (ask_help_fragment == null)
-                    ask_help_fragment = new AskHelpFragment();
-                transaction.replace(R.id.main_content, ask_help_fragment);
-                break;
-            case R.id.ask_question:
-                if (ask_question_fragment == null)
-                    ask_question_fragment = new AskQuestionFragment();
-                transaction.replace(R.id.main_content, ask_question_fragment);
-                break;
-            case R.id.my_info:
-                if (my_info_fragment == null)
-                    my_info_fragment = new MyInfoFragment();
-                transaction.replace(R.id.main_content, my_info_fragment);
-                break;
-        }
-        transaction.commit();
     }
 
     private void updateObjectId() {

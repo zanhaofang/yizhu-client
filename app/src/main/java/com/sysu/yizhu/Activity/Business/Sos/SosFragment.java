@@ -22,6 +22,7 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.HttpUtil;
@@ -39,7 +40,7 @@ public class SosFragment extends Fragment {
     private static final String updateLocationUrl = "http://112.74.165.37:8080/user/updateLocation";
     private static final String sosPushUrl = "http://112.74.165.37:8080/sos/push";
 
-    private MapView mMapView;
+    private TextureMapView mMapView;
     private BaiduMap mBaiduMap;
     private LocationClient locClient;
     private LocationClientOption locClientOpt;
@@ -57,11 +58,12 @@ public class SosFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SDKInitializer.initialize(getActivity().getApplicationContext());
+        if (getActivity() != null)
+            SDKInitializer.initialize(getActivity().getApplicationContext());
 
         View view = inflater.inflate(R.layout.sos_layout, container, false);
         //获取控件引用
-        mMapView = (MapView) view.findViewById(R.id.bmapView);
+        mMapView = (TextureMapView) view.findViewById(R.id.bmapView);
         hotkey_help_locate = (Button) view.findViewById(R.id.hotkey_help_locate);
         hotkey_help_push = (Button) view.findViewById(R.id.hotkey_help_push);
         hotkey_help_response = (Button) view.findViewById(R.id.hotkey_help_response);
@@ -140,12 +142,14 @@ public class SosFragment extends Fragment {
             if (isFirstLoc || isRequest) {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
-                updateLocation(latitude, longitude);
 
                 mBaiduMap.animateMapStatus(u);
                 isRequest = false;
             }
             isFirstLoc = false;
+            if (getActivity() != null) {
+                updateLocation();
+            }
         }
 
         @Override
@@ -154,7 +158,7 @@ public class SosFragment extends Fragment {
         }
     }
 
-    private void updateLocation(double latitude, double longitude) {
+    private void updateLocation() {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("latitude", Double.toString(latitude));
         params.put("longitude", Double.toString(longitude));
@@ -255,20 +259,21 @@ public class SosFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
+        super.onDestroy();
     }
     @Override
     public void onResume() {
-        super.onResume();
+
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();
+        super.onResume();
     }
     @Override
     public void onPause() {
-        super.onPause();
         //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
         mMapView.onPause();
+        super.onPause();
     }
 }

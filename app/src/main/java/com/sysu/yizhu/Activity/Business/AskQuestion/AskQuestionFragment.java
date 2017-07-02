@@ -1,14 +1,16 @@
 package com.sysu.yizhu.Activity.Business.AskQuestion;
 
-import android.app.ListFragment;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.HttpUtil;
@@ -22,15 +24,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.util.PtrLocalDisplay;
+
 /**
  * Created by QianZixuan on 2017/4/30.
  * Description: 提问fragment
  */
-public class AskQuestionFragment extends ListFragment {
+public class AskQuestionFragment extends Fragment{
     private static final String getAllQuestionIdUrl = "http://112.74.165.37:8080/question/getAllId";
     private static final String getQusetionByIdUrl = "http://112.74.165.37:8080/question/digest/";
 
+    private PtrFrameLayout mPtrFrame;
     private FloatingActionButton addQuestion;
+    private ListView question_list;
 
     private SimpleAdapter adapter;
 
@@ -43,7 +53,29 @@ public class AskQuestionFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.ask_question_layout, container, false);
 
+        mPtrFrame = (PtrFrameLayout) view.findViewById(R.id.ask_question_ptr_frame);
         addQuestion = (FloatingActionButton) view.findViewById(R.id.addQuestion);
+        question_list = (ListView) view.findViewById(R.id.question_list);
+
+        final PtrClassicDefaultHeader  header = new PtrClassicDefaultHeader(getActivity().getApplicationContext());
+        header.setPadding(0, PtrLocalDisplay.dp2px(15), 0, 0);
+
+        mPtrFrame.setHeaderView(header);
+        mPtrFrame.addPtrUIHandler(header);
+
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                getData();
+                Toast.makeText(getActivity(), "下拉刷新", Toast.LENGTH_SHORT).show();
+                mPtrFrame.refreshComplete();
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
 
         addQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,29 +88,26 @@ public class AskQuestionFragment extends ListFragment {
             }
         });
 
-        return view;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        adapter = new SimpleAdapter(getActivity(), getData(), R.layout.question_item_layout,
+        adapter = new SimpleAdapter(getActivity(), list, R.layout.question_item_layout,
                 new String[] {"userName", "title", "createDate"},
                 new int[] {R.id.questionItemUserName, R.id.questionItemTitle, R.id.questionItemCreateDate});
-        setListAdapter(adapter);
-    }
+        question_list.setAdapter(adapter);
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        //listview Item点击事件
-        if (getActivity() != null) {
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), QuestionDetailActivity.class);
-            intent.putExtra("questionId", list.get(position).get("questionId")); //传送questionId
-            getActivity().startActivity(intent);
-        }
+        question_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (getActivity() != null) {
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), QuestionDetailActivity.class);
+                    intent.putExtra("questionId", list.get(position).get("questionId")); //传送questionId
+                    getActivity().startActivity(intent);
+                }
+            }
+        });
+
+        getData();
+
+        return view;
     }
 
     private List<Map<String, String>> getData() {
@@ -150,7 +179,6 @@ public class AskQuestionFragment extends ListFragment {
 
             }
         });
-
         return list;
     }
 }

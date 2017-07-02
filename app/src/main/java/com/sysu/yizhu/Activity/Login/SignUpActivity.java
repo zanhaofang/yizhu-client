@@ -147,7 +147,7 @@ public class SignUpActivity extends AppCompatActivity {
     //显示BirthDate
     private void setBirthDateText() {
         String date = year + "-";
-        if (month < 10)
+        if ((month + 1) < 10)
             date = date + "0";
         date = date + (month + 1) + "-";
         if (day < 10)

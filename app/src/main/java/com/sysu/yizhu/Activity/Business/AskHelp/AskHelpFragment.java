@@ -30,6 +30,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.UserData;
@@ -46,7 +47,7 @@ import java.util.HashMap;
  * Description: 求助fragment
  */
 public class AskHelpFragment extends Fragment {
-    private MapView mMapView;
+    private TextureMapView mMapView;
     private BaiduMap mBaiduMap;
     private LocationClient locClient;
     private LocationClientOption locClientOpt;
@@ -64,11 +65,12 @@ public class AskHelpFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SDKInitializer.initialize(getActivity().getApplicationContext());
+        if (getActivity() != null)
+            SDKInitializer.initialize(getActivity().getApplicationContext());
 
         View view = inflater.inflate(R.layout.ask_help_layout, container, false);
         //获取地图控件引用
-        mMapView = (MapView) view.findViewById(R.id.ask_help_bmapView);
+        mMapView = (TextureMapView) view.findViewById(R.id.ask_help_bmapView);
         hotkey_help_locate = (Button) view.findViewById(R.id.ask_help_locate);
 
 
@@ -121,19 +123,24 @@ public class AskHelpFragment extends Fragment {
             public void onSuccess(int code, String result) {
                 switch (code) {
                     case 200:
-                        Toast.makeText(getActivity(), "更新定位成功！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "更新定位成功！", Toast.LENGTH_SHORT).show();
                         break;
                     case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
                         break;
                     case 403:
-                        Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
                         break;
                     case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
                         break;
                     case 500:
-                        Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
@@ -161,22 +168,28 @@ public class AskHelpFragment extends Fragment {
             public void onSuccess(int code, String result) {
                 switch (code) {
                     case 200:
-                        Toast.makeText(getActivity(), "求助成功！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "求助成功！", Toast.LENGTH_SHORT).show();
                         break;
                     case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
                         break;
                     case 402:
-                        Toast.makeText(getActivity(), "需求人数无效！应在1-10人间", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "需求人数无效！应在1-10人间", Toast.LENGTH_SHORT).show();
                         break;
                     case 403:
-                        Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "定位失败！", Toast.LENGTH_SHORT).show();
                         break;
                     case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
                         break;
                     case 500:
-                        Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "服务器错误！", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
@@ -201,22 +214,28 @@ public class AskHelpFragment extends Fragment {
             public void onSuccess(int code, String result) {
                 switch (code) {
                     case 200:
-                        Toast.makeText(getActivity(), "成功！快去目的地帮助他人吧！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "成功！快去目的地帮助他人吧！", Toast.LENGTH_SHORT).show();
                         break;
                     case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
                         break;
                     case 402:
-                        Toast.makeText(getActivity(), "该求助人数已满！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "该求助人数已满！", Toast.LENGTH_SHORT).show();
                         break;
                     case 403:
-                        Toast.makeText(getActivity(), "已响应，不能重复响应！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "已响应，不能重复响应！", Toast.LENGTH_SHORT).show();
                         break;
                     case 404:
-                        Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
                         break;
                     case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
@@ -240,16 +259,20 @@ public class AskHelpFragment extends Fragment {
             public void onSuccess(int code, String result) {
                 switch (code) {
                     case 200:
-                        Toast.makeText(getActivity(), "成功！已结束。", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "成功！已结束。", Toast.LENGTH_SHORT).show();
                         break;
                     case 401:
-                        Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未登录！", Toast.LENGTH_SHORT).show();
                         break;
                     case 404:
-                        Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "该求助已结束！", Toast.LENGTH_SHORT).show();
                         break;
                     case 450:
-                        Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null)
+                            Toast.makeText(getActivity(), "未记录ObjectId！", Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
