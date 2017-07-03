@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ import java.util.HashMap;
  */
 public class MainActivity extends AppCompatActivity{
     private static final String updateObjectIdUrl = "http://112.74.165.37:8080/user/updateObjectId";
+
+    private long exitTime = 0;// 记录返回时间
 
     //fragment
     private SosFragment sos_fragment;
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity{
             public void onSuccess(int code, String result) {
                 switch (code) {
                     case 200:
-                        Toast.makeText(MainActivity.this, "请求成功", Toast.LENGTH_SHORT).show();
+                        /*Toast.makeText(MainActivity.this, "更新objectId成功", Toast.LENGTH_SHORT).show();*/
                         break;
                     case 401:
                         Toast.makeText(MainActivity.this, "未登录", Toast.LENGTH_SHORT).show();
@@ -167,5 +170,20 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            if((System.currentTimeMillis() - exitTime) > 2000){
+                Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

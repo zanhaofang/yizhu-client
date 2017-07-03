@@ -3,7 +3,6 @@ package com.sysu.yizhu.Activity.Business.AskQuestion;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.HttpUtil;
 

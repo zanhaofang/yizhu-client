@@ -2,13 +2,70 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:fab="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/question_detail_linear_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/question_username"
+            android:hint="来自xxx的问题"
+            android:textSize="10dp"
+            android:textColor="#D1D1D1"
+            style="@style/AskQuestionListItemPadding"
+            />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/question_createDate"
+            android:hint="2017-xx-xx"
+            android:textSize="10dp"
+            android:textColor="#D1D1D1"
+            style="@style/AskQuestionListItemPadding"
+            />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/question_title"
+            android:hint="问题标题"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            style="@style/AskQuestionListItemPadding"
+            />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/question_content"
+            android:hint="问题内容"
+            android:textSize="15dp"
+            android:textColor="#787878"
+            style="@style/AskQuestionListItemPadding"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/question_answer_divider"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="#DCDCDC"
+        android:layout_below="@+id/question_detail_linear_layout"/>
 
     <in.srain.cube.views.ptr.PtrFrameLayout
         android:id="@+id/question_detail_ptr_frame"
         xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/question_answer_divider"
 
         cube_ptr:ptr_resistance="1.7"
         cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
@@ -16,56 +73,6 @@
         cube_ptr:ptr_duration_to_close_header="2000"
         cube_ptr:ptr_keep_header_when_refresh="true"
         cube_ptr:ptr_pull_to_fresh="false" >
-
-        <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:id="@+id/question_username"
-                android:hint="来自xxx的问题"
-                android:textSize="10dp"
-                android:textColor="#D1D1D1"
-                style="@style/AskQuestionListItemPadding"
-                />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:id="@+id/question_createDate"
-                android:hint="2017-xx-xx"
-                android:textSize="10dp"
-                android:textColor="#D1D1D1"
-                style="@style/AskQuestionListItemPadding"
-                />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:id="@+id/question_title"
-                android:hint="问题标题"
-                android:textStyle="bold"
-                android:textSize="18dp"
-                android:textColor="#000000"
-                style="@style/AskQuestionListItemPadding"
-                />
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:id="@+id/question_content"
-                android:hint="问题内容"
-                android:textSize="15dp"
-                android:textColor="#787878"
-                style="@style/AskQuestionListItemPadding"
-                />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:background="#DCDCDC" />
 
             <ListView
                 android:id="@+id/answer_list"
@@ -75,21 +82,19 @@
                 android:dividerHeight="1dp"
                 android:scrollbars="none"
                 />
-        </LinearLayout>
 
     </in.srain.cube.views.ptr.PtrFrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.getbase.floatingactionbutton.FloatingActionButton
         android:id="@+id/addAnswer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/edit"
+        fab:fab_colorNormal="@color/colorAccent"
+        fab:fab_size="normal"
+        fab:fab_icon="@drawable/edit"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        app:fabSize="auto"
-        app:backgroundTint="@color/colorAccent"
-        app:elevation="8dp" />
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

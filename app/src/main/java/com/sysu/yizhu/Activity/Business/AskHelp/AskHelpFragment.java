@@ -29,6 +29,7 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.UserData;
 import com.sysu.yizhu.Util.HttpUtil;
@@ -54,9 +55,9 @@ public class AskHelpFragment extends Fragment {
     boolean isRequest; //手动请求
     boolean isFirstLoc; //初次定位
 
-    private Button hotkey_help_locate;
-    private Button refreshHelpBtn;
-    private Button pushBtn;
+    private Button ask_help_locate;
+    private FloatingActionButton refreshHelpBtn;
+    private FloatingActionButton pushBtn;
 
     private static final String SERVER_HOST = "http://112.74.165.37:8080";
 
@@ -68,11 +69,13 @@ public class AskHelpFragment extends Fragment {
         View view = inflater.inflate(R.layout.ask_help_layout, container, false);
         //获取地图控件引用
         mMapView = (TextureMapView) view.findViewById(R.id.ask_help_bmapView);
-        hotkey_help_locate = (Button) view.findViewById(R.id.ask_help_locate);
-
+        ask_help_locate = (Button) view.findViewById(R.id.ask_help_locate);
 
         isRequest = false;
         isFirstLoc = true;
+
+        mMapView.showScaleControl(false);
+        mMapView.showZoomControls(false);
 
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMyLocationEnabled(true);
@@ -82,7 +85,7 @@ public class AskHelpFragment extends Fragment {
         initBMapMarkerClickListener(mBaiduMap, getActivity());
         findMyLocation();
 
-        hotkey_help_locate.setOnClickListener(new View.OnClickListener() {
+        ask_help_locate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isRequest = true;
@@ -90,7 +93,7 @@ public class AskHelpFragment extends Fragment {
             }
         });
 
-        refreshHelpBtn = (Button) view.findViewById(R.id.ask_help_refresh_btn);
+        refreshHelpBtn = (FloatingActionButton) view.findViewById(R.id.ask_help_refresh_btn);
         refreshHelpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +101,7 @@ public class AskHelpFragment extends Fragment {
             }
         });
 
-        pushBtn = (Button) view.findViewById(R.id.ask_help_push_btn);
+        pushBtn = (FloatingActionButton) view.findViewById(R.id.ask_help_push_btn);
         pushBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,8 +123,8 @@ public class AskHelpFragment extends Fragment {
             public void onSuccess(int code, String result) {
                 switch (code) {
                     case 200:
-                        if (getActivity() != null)
-                            Toast.makeText(getActivity(), "更新定位成功！", Toast.LENGTH_SHORT).show();
+                        /*if (getActivity() != null)
+                            Toast.makeText(getActivity(), "更新定位成功！", Toast.LENGTH_SHORT).show();*/
                         break;
                     case 401:
                         if (getActivity() != null)

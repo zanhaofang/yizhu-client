@@ -24,6 +24,7 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.TextureMapView;
 import com.baidu.mapapi.model.LatLng;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.HttpUtil;
 
@@ -52,9 +53,9 @@ public class SosFragment extends Fragment {
     private double latitude;
     private double longitude;
 
-    private Button hotkey_help_locate;
-    private Button hotkey_help_push;
-    private Button hotkey_help_response;
+    private Button sos_locate;
+    private FloatingActionButton sos_push;
+    private FloatingActionButton sos_response;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,9 +65,9 @@ public class SosFragment extends Fragment {
         View view = inflater.inflate(R.layout.sos_layout, container, false);
         //获取控件引用
         mMapView = (TextureMapView) view.findViewById(R.id.bmapView);
-        hotkey_help_locate = (Button) view.findViewById(R.id.hotkey_help_locate);
-        hotkey_help_push = (Button) view.findViewById(R.id.hotkey_help_push);
-        hotkey_help_response = (Button) view.findViewById(R.id.hotkey_help_response);
+        sos_locate = (Button) view.findViewById(R.id.sos_locate);
+        sos_push = (FloatingActionButton) view.findViewById(R.id.sos_push);
+        sos_response = (FloatingActionButton) view.findViewById(R.id.sos_response);
 
         isRequest = false;
         isFirstLoc = true;
@@ -81,7 +82,7 @@ public class SosFragment extends Fragment {
 
         findMyLocation();
 
-        hotkey_help_locate.setOnClickListener(new View.OnClickListener() {
+        sos_locate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 isRequest = true;
@@ -89,14 +90,14 @@ public class SosFragment extends Fragment {
             }
         });
 
-        hotkey_help_push.setOnClickListener(new View.OnClickListener() {
+        sos_push.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sosPush();
             }
         });
 
-        hotkey_help_response.setOnClickListener(new View.OnClickListener() {
+        sos_response.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sosResponse();
@@ -167,8 +168,8 @@ public class SosFragment extends Fragment {
             public void onSuccess(int code, String result) {
                 switch (code) {
                     case 200:
-                        if (getActivity() != null)
-                            Toast.makeText(getActivity(), "请求成功", Toast.LENGTH_SHORT).show();
+                        /*if (getActivity() != null)
+                            Toast.makeText(getActivity(), "更新定位成功！", Toast.LENGTH_SHORT).show();*/
                         break;
                     case 401:
                         if (getActivity() != null)

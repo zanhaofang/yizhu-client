@@ -1,45 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto">
 
-    <com.baidu.mapapi.map.TextureMapView
-        android:id="@+id/bmapView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true" />
+        android:layout_height="200dp">
 
-    <Button
-        android:id="@+id/hotkey_help_locate"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="@drawable/locate"
-        />
+        <com.baidu.mapapi.map.TextureMapView
+            android:id="@+id/bmapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true" />
 
-    <Button
-        android:id="@+id/hotkey_help_push"
+        <Button
+            android:id="@+id/sos_locate"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/locate" />
+
+    </RelativeLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/sos_fab_menu"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_above="@+id/hotkey_help_response"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:text="一键求助"
-        />
-
-    <Button
-        android:id="@+id/hotkey_help_response"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:text="救助他人"
-        />
+        fab:fab_addButtonColorNormal="@color/colorAccent"
+        fab:fab_icon="@drawable/add"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sos_push"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_size="mini"
+            fab:fab_icon="@drawable/sos"
+            fab:fab_title="一键求救"/>
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sos_response"
+            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_size="mini"
+            fab:fab_icon="@drawable/sos"
+            fab:fab_title="救助他人"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>
