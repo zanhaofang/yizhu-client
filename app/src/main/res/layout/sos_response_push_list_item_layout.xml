@@ -5,11 +5,28 @@
     android:orientation="vertical">
 
     <TextView
+        android:text="求救时间"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        style="@style/sos_response_push_list_title_style"
+        />
+
+    <TextView
         android:id="@+id/sos_response_push_list_createTime"
         android:hint="求救时间"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        style="@style/sos_response_push_list_content_style"
+        />
+
+    <TextView
+        android:text="求救状态"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        style="@style/sos_response_push_list_title_style"
         />
 
     <TextView
@@ -18,6 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        style="@style/sos_response_push_list_content_style"
         />
 
 </LinearLayout>

@@ -15,6 +15,7 @@ import com.sysu.yizhu.R;
 import com.sysu.yizhu.Util.AppManager;
 import com.sysu.yizhu.Util.HttpUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +52,8 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
     private String questionId;
     private int count;
-    private String [] data;//存回答Id
+    private int list_count;
+    private List<String> data = new ArrayList<String>();//存回答Id
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,9 +80,8 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
+            public void onRefreshBegin(PtrFrameLayout frame) { //下拉刷新
                 getAnswerList();
-                Toast.makeText(QuestionDetailActivity.this, "下拉刷新", Toast.LENGTH_SHORT).show();
                 mPtrFrame.refreshComplete();
             }
 
@@ -105,10 +106,15 @@ public class QuestionDetailActivity extends AppCompatActivity {
             }
         });
 
+        AppManager.getAppManager().addActivity(QuestionDetailActivity.this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         getQuestionDetail();
         getAnswerList();
-
-        AppManager.getAppManager().addActivity(QuestionDetailActivity.this);
     }
 
     private void getQuestionDetail() {
@@ -144,8 +150,10 @@ public class QuestionDetailActivity extends AppCompatActivity {
     }
 
     private List<Map<String, String>> getAnswerList() {
+        data.clear();
         list.clear(); //清空Adapter中的数据
         count = 0;
+        list_count = 0;
 
         HttpUtil.get(getAllAnswerIdUrl + questionId, new HttpUtil.HttpResponseCallBack() { //获得所有问题id
             @Override
@@ -156,18 +164,19 @@ public class QuestionDetailActivity extends AppCompatActivity {
                         try {
                             object = new JSONObject(result);
                             count = Integer.parseInt(object.optString("count"));
-                            String strTemp = object.optString("data");
-                            if (strTemp.length() > 2) {
-                                strTemp = strTemp.substring(1, strTemp.length()-1);
-                                data = strTemp.split(",");
-                            } else {
-                                data = new String[]{};
+                            JSONArray jsonArray = object.optJSONArray("data");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                data.add( jsonArray.getString(i) );
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } finally {
                             for (int i = 0; i < count; i++) {
-                                HttpUtil.get(getAnswerByIdUrl + data[i], new HttpUtil.HttpResponseCallBack() { //根据id获取问题
+                                Map<String, String> map = new HashMap<String, String>();
+                                list.add(map);
+                            }
+                            for (int i = 0; i < count; i++) {
+                                HttpUtil.get(getAnswerByIdUrl + data.get(i), new HttpUtil.HttpResponseCallBack() { //根据id获取问题
                                     @Override
                                     public void onSuccess(int code, String result) {
                                         switch (code) {
@@ -184,8 +193,11 @@ public class QuestionDetailActivity extends AppCompatActivity {
                                                     map.put("createDate", object.optString("createDate"));
                                                     map.put("good", object.optString("good"));
                                                     map.put("bad", object.optString("bad"));
-                                                    list.add(map);
-                                                    adapter.notifyDataSetChanged(); //更新adapter数据
+                                                    list.set((count - 1) - data.indexOf(object.optString("answerId")), map);
+                                                    list_count++;
+                                                    if (list_count == count) {
+                                                        adapter.notifyDataSetChanged(); //更新adapter数据
+                                                    }
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -215,7 +227,6 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
             }
         });
-        adapter.notifyDataSetChanged(); //更新adapter数据
         return list;
     }
 }

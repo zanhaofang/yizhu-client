@@ -20,6 +20,9 @@
             android:id="@+id/sos_response_push_list"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
+            android:divider="#DCDCDC"
+            android:dividerHeight="10dp"
+            android:scrollbars="none"
             />
 
     </in.srain.cube.views.ptr.PtrFrameLayout>>

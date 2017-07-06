@@ -47,7 +47,8 @@ public class AskQuestionFragment extends Fragment{
     private List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
     private int count;
-    private String [] data;
+    private int list_count;
+    private List<String> data = new ArrayList<String>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,9 +66,8 @@ public class AskQuestionFragment extends Fragment{
 
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
+            public void onRefreshBegin(PtrFrameLayout frame) {//下拉刷新
                 getData();
-                Toast.makeText(getActivity(), "下拉刷新", Toast.LENGTH_SHORT).show();
                 mPtrFrame.refreshComplete();
             }
 
@@ -105,14 +105,21 @@ public class AskQuestionFragment extends Fragment{
             }
         });
 
-        getData();
-
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getData();
+    }
+
     private List<Map<String, String>> getData() {
+        data.clear(); //清空问题Id
         list.clear(); //清空Adapter中的数据
         count = 0;
+        list_count = 0;
 
         HttpUtil.get(getAllQuestionIdUrl, new HttpUtil.HttpResponseCallBack() { //获得所有问题id
             @Override
@@ -124,16 +131,18 @@ public class AskQuestionFragment extends Fragment{
                             object = new JSONObject(result);
                             count = object.optInt("count");
                             JSONArray jsonArray = object.optJSONArray("data");
-                            List<String> arrayList = new ArrayList<String>();
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                arrayList.add( jsonArray.getString(i) );
+                                data.add( jsonArray.getString(i) );
                             }
-                            data = arrayList.toArray(new String[arrayList.size()]);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } finally {
                             for (int i = 0; i < count; i++) {
-                                HttpUtil.get(getQusetionByIdUrl + data[i], new HttpUtil.HttpResponseCallBack() { //根据id获取问题
+                                Map<String, String> map = new HashMap<String, String>();
+                                list.add(map);
+                            }
+                            for (int i = 0; i < count; i++) {
+                                HttpUtil.get(getQusetionByIdUrl + data.get(i), new HttpUtil.HttpResponseCallBack() { //根据id获取问题
                                     @Override
                                     public void onSuccess(int code, String result) {
                                         switch (code) {
@@ -148,8 +157,11 @@ public class AskQuestionFragment extends Fragment{
                                                     map.put("userName", object.optString("userName"));
                                                     map.put("title", object.optString("title"));
                                                     map.put("createDate", object.optString("createDate"));
-                                                    list.add(map);
-                                                    adapter.notifyDataSetChanged(); //更新adapter数据
+                                                    list.set((count - 1) - data.indexOf(object.optString("questionId")) ,map);
+                                                    list_count++;
+                                                    if (list_count == count) {
+                                                        adapter.notifyDataSetChanged(); //更新adapter数据
+                                                    }
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -179,7 +191,6 @@ public class AskQuestionFragment extends Fragment{
 
             }
         });
-        adapter.notifyDataSetChanged();
         return list;
     }
 }

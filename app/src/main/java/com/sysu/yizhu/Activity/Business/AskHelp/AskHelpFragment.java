@@ -84,6 +84,7 @@ public class AskHelpFragment extends Fragment {
 
         initBMapMarkerClickListener(mBaiduMap, getActivity());
         findMyLocation();
+        refreshAskHelps();
 
         ask_help_locate.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -44,7 +44,8 @@ public class SosResponseActivity extends AppCompatActivity {
     private ListView sos_response_push_list;
 
     private int count;
-    private String[] data;
+    private int list_count;
+    private List<String> data = new ArrayList<String>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,7 +76,7 @@ public class SosResponseActivity extends AppCompatActivity {
         });
 
         adapter = new SimpleAdapter(SosResponseActivity.this, list, R.layout.sos_response_push_list_item_layout,
-                new String[] {"createTime", "finished"},
+                new String[] {"createTime", "state"},
                 new int[] {R.id.sos_response_push_list_createTime, R.id.sos_response_push_list_finished});
         sos_response_push_list.setAdapter(adapter);
 
@@ -89,14 +90,21 @@ public class SosResponseActivity extends AppCompatActivity {
             }
         });
 
-        getData();
-
         AppManager.getAppManager().addActivity(SosResponseActivity.this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getData();
+    }
+
     private List<Map<String, String>> getData() {
+        data.clear();
         list.clear(); //清空Adapter中的数据
         count = 0;
+        list_count = 0;
 
         HttpUtil.get(getAllValidSosIdUrl, new HttpUtil.HttpResponseCallBack() { //获得所有id
             @Override
@@ -108,16 +116,18 @@ public class SosResponseActivity extends AppCompatActivity {
                             object = new JSONObject(result);
                             count = object.optInt("count");
                             JSONArray jsonArray = object.optJSONArray("data");
-                            List<String> arrayList = new ArrayList<String>();
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                arrayList.add( jsonArray.getString(i) );
+                                data.add( jsonArray.getString(i) );
                             }
-                            data = arrayList.toArray(new String[arrayList.size()]);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } finally {
                             for (int i = 0; i < count; i++) {
-                                HttpUtil.get(getSosByIdUrl + data[i], new HttpUtil.HttpResponseCallBack() { //根据id获取
+                                Map<String, String> map;map = new HashMap<String, String>();
+                                list.add(map);
+                            }
+                            for (int i = 0; i < count; i++) {
+                                HttpUtil.get(getSosByIdUrl + data.get(i), new HttpUtil.HttpResponseCallBack() { //根据id获取
                                     @Override
                                     public void onSuccess(int code, String result) {
                                         switch (code) {
@@ -126,15 +136,22 @@ public class SosResponseActivity extends AppCompatActivity {
                                                 try {
                                                     object = new JSONObject(result);
 
-                                                    Map<String, String> map = new HashMap<String, String>();
+                                                    Map<String, String> map;map = new HashMap<String, String>();
                                                     map.put("sosId", object.optString("sosId"));
                                                     map.put("latitude", object.optString("latitude"));
                                                     map.put("longitude", object.optString("longitude"));
                                                     map.put("createTime", object.optString("createTime"));
-                                                    map.put("finished", object.optString("finished"));
                                                     map.put("pushUserId", object.optString("pushUserId"));
-                                                    list.add(map);
-                                                    adapter.notifyDataSetChanged(); //更新adapter数据
+                                                    if (object.optBoolean("finished")) {
+                                                        map.put("state", "求救结束");
+                                                    } else {
+                                                        map.put("state", "正在求救");
+                                                    }
+                                                    list.set((count - 1) - data.indexOf(object.optString("sosId")), map);
+                                                    list_count++;
+                                                    if (list_count == count) {
+                                                        adapter.notifyDataSetChanged();
+                                                    }
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -164,7 +181,6 @@ public class SosResponseActivity extends AppCompatActivity {
 
             }
         });
-        adapter.notifyDataSetChanged();
         return list;
     }
 }
