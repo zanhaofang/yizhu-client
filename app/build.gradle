@@ -17,11 +17,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main() {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.ashokvarma.android:bottom-navigation-bar:2.0.1'
+    compile 'in.srain.cube:ultra-ptr:1.0.11'
+    compile 'com.getbase:floatingactionbutton:1.10.1'
+    compile files('libs/BaiduLBS_Android.jar')
+    compile files('libs/httpmime-4.1.2.jar')
+    compile files('libs/IndoorscapeAlbumPlugin.jar')
+    compile files('libs/leancloud/avoscloud-push-v4.1.1.jar')
+    compile files('libs/leancloud/avoscloud-sdk-v4.1.1.jar')
+    compile files('libs/leancloud/fastjson-1.2.30.jar')
+    compile files('libs/leancloud/Java-WebSocket-1.3.2-leancloud.jar')
+    compile files('libs/leancloud/okhttp-3.8.0.jar')
+    compile files('libs/leancloud/okio-1.13.0.jar')
+    compile files('libs/leancloud/protobuf-java-2.6.1.jar')
 }

@@ -36,7 +36,7 @@
                 android:id="@+id/sign_up_gender"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:entries="@array/spinner_gender"
+                android:entries="@array/gender"
                 android:layout_span="2"/>
         </TableRow>
 

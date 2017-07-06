@@ -4,133 +4,173 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TableLayout
+    <RelativeLayout
+        android:id="@+id/my_info_userName"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="1">
+        android:layout_height="50dp"
+        style="@style/my_info_holder_style">
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="姓名"/>
+        <TextView
+            android:id="@+id/my_info_userName_title"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:gravity="left|center"
+            android:text="姓名"
+            style="@style/my_info_title_style"/>
 
-            <EditText
-                android:id="@+id/my_info_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:background="@drawable/bg_edittext"
-                android:layout_span="1"/>
-        </TableRow>
+        <TextView
+            android:id="@+id/my_info_userName_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/my_info_userName_title"
+            android:layout_toLeftOf="@+id/my_info_userName_image"
+            android:hint="userName"
+            android:gravity="left|center"
+            style="@style/my_info_content_style"/>
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="性别"/>
+        <ImageView
+            android:id="@+id/my_info_userName_image"
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            android:src="@drawable/arrow_right"
+            android:layout_alignParentRight="true"/>
 
-            <Spinner
-                android:id="@+id/my_info_gender"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:entries="@array/spinner_gender"
-                android:layout_span="1"/>
-        </TableRow>
+    </RelativeLayout>
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="出生年月"/>
+    <RelativeLayout
+        android:id="@+id/my_info_gender"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/my_info_holder_style">
 
-            <TextView
-                android:id="@+id/my_info_birthDateText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_span="1"
-                android:gravity="center_vertical"/>
-        </TableRow>
+        <TextView
+            android:id="@+id/my_info_gender_title"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:gravity="left|center"
+            android:text="性别"
+            style="@style/my_info_title_style"/>
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="常居地"/>
+        <TextView
+            android:id="@+id/my_info_gender_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/my_info_gender_title"
+            android:layout_toLeftOf="@+id/my_info_gender_image"
+            android:hint="gender"
+            android:gravity="left|center"
+            style="@style/my_info_content_style"/>
 
-            <EditText
-                android:id="@+id/my_info_location"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:background="@drawable/bg_edittext"
-                android:layout_span="1"/>
-        </TableRow>
+        <ImageView
+            android:id="@+id/my_info_gender_image"
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            android:src="@drawable/arrow_right"
+            android:layout_alignParentRight="true"/>
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="手机"/>
+    </RelativeLayout>
 
-            <EditText
-                android:id="@+id/my_info_phoneNum"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:layout_span="1"
-                android:background="@drawable/bg_edittext"/>
-        </TableRow>
+    <RelativeLayout
+        android:id="@+id/my_info_birthDate"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/my_info_holder_style">
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="请输入密码"/>
+        <TextView
+            android:id="@+id/my_info_birthDate_title"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:gravity="left|center"
+            android:text="生日"
+            style="@style/my_info_title_style"/>
 
-            <EditText
-                android:id="@+id/my_info_password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:inputType="textPassword"
-                android:background="@drawable/bg_edittext"
-                android:layout_span="1"/>
-        </TableRow>
+        <TextView
+            android:id="@+id/my_info_birthDate_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/my_info_birthDate_title"
+            android:layout_toLeftOf="@+id/my_info_birthDate_image"
+            android:hint="birthDate"
+            android:gravity="left|center"
+            style="@style/my_info_content_style"/>
 
-        <TableRow>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="确认密码"/>
+        <ImageView
+            android:id="@+id/my_info_birthDate_image"
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            android:src="@drawable/arrow_right"
+            android:layout_alignParentRight="true"/>
 
-            <EditText
-                android:id="@+id/my_info_retypePassword"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:singleLine="true"
-                android:inputType="textPassword"
-                android:background="@drawable/bg_edittext"
-                android:layout_span="1"/>
-        </TableRow>
+    </RelativeLayout>
 
-        <TableRow
-            android:gravity="center">
-            <Button
-                android:text="编辑"
-                android:id="@+id/my_info_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#808080"/>
-        </TableRow>
+    <RelativeLayout
+        android:id="@+id/my_info_location"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/my_info_holder_style">
 
-    </TableLayout>
+        <TextView
+            android:id="@+id/my_info_location_title"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:gravity="left|center"
+            android:text="常居地"
+            style="@style/my_info_title_style"/>
+
+        <TextView
+            android:id="@+id/my_info_location_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/my_info_location_title"
+            android:layout_toLeftOf="@+id/my_info_location_image"
+            android:hint="location"
+            android:gravity="left|center"
+            style="@style/my_info_content_style"/>
+
+        <ImageView
+            android:id="@+id/my_info_location_image"
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            android:src="@drawable/arrow_right"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/my_info_phoneNum"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/my_info_holder_style">
+
+        <TextView
+            android:id="@+id/my_info_phoneNum_title"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:gravity="left|center"
+            android:text="手机号"
+            style="@style/my_info_title_style"/>
+
+        <TextView
+            android:id="@+id/my_info_phoneNum_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/my_info_phoneNum_title"
+            android:layout_toLeftOf="@+id/my_info_phoneNum_image"
+            android:hint="phoneNum"
+            android:gravity="left|center"
+            style="@style/my_info_content_style"/>
+
+        <ImageView
+            android:id="@+id/my_info_phoneNum_image"
+            android:layout_height="match_parent"
+            android:layout_width="10dp"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
 
 </LinearLayout>
